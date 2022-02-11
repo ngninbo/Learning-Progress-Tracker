@@ -264,4 +264,8 @@ public class Tracker {
                 .stream()
                 .anyMatch(studentEntry -> email.equals(studentEntry.getValue().getEmail()));
     }
+
+    public Map<Long, Student> getStudentMap() {
+        return studentMap;
+    }
 }
