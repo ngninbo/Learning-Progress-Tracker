@@ -1,101 +1,121 @@
 package tracker;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import tracker.utils.Validator;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import tracker.builder.TrackerBuilder;
+import tracker.model.Student;
+import tracker.builder.StudentBuilder;
+import tracker.utils.StudentIdGenerator;
+import tracker.utils.TrackerHelperFunction;
 
-import java.util.function.Predicate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static tracker.utils.TrackerUtil.MIN_ID;
 
 class TrackerTest {
 
+    public static StudentIdGenerator studentIdGenerator;
+    public static Tracker tracker;
 
-    private final Predicate<String> isValidName = Validator::isValidName;
-    private final Predicate<String> isValidMail = Validator::isValidEmail;
-
-    @Test
-    @DisplayName("Should return true when first name contains hyphens")
-    void testFirstnameWithHyphens() {
-        String name = "Jean-Claude";
-        assertTrue(isValidName.test(name));
+    @BeforeAll
+    static void beforeAll() {
+        studentIdGenerator = StudentIdGenerator.getInstance();
+        tracker = TrackerBuilder.init()
+                .withStudentTable()
+                .withInitialSubmit()
+                .withAssignmentList()
+                .withStatistic()
+                .build();
     }
 
-    @Test
-    @DisplayName("Should return true when first name contains apostrophe")
-    void testFirstnameWithApostrophe() {
-        String name = "O'Neill";
-        assertTrue(isValidName.test(name));
+    @ParameterizedTest(name = "Should add student with firstname = {0}, lastname = {2} and email = {3}")
+    @MethodSource("argStudentFactory")
+    void testAddStudent(String firstname, String lastname, String email) {
+
+        final Long nextId = studentIdGenerator.getNextId();
+        assertTrue(nextId > MIN_ID);
+        Student student = StudentBuilder.init()
+                .withId(nextId)
+                .withCredentials(firstname, lastname, email)
+                .withCourses()
+                .build();
+
+        assertEquals(nextId, student.getId());
+
+        assertTrue(tracker.validateCredentials(student));
     }
 
-    @Test
-    @DisplayName("Should return true when last name contains space")
-    void testLastnameContainsSpace() {
-        String name = "van Helsing";
-        assertTrue(Validator.isValidLastname(name));
+    @ParameterizedTest(name = "Update progress data for {0}. Should return with {1}")
+    @MethodSource("argCoursePointsFactory")
+    void updateStudentCoursePoints(List<Long> progressData, boolean isUpdate) {
+        assertEquals(isUpdate, tracker.updateStudentCoursePoints(progressData));
     }
 
-    @Test
-    @DisplayName("Should return false when first name and last name contain invalid characters")
-    void testFirstnameWithInvalidCharacter() {
-        String name = "Stanisław";
-        assertFalse(isValidName.test(name));
+
+    @ParameterizedTest(name = "Should throw exception for invalid list {0}")
+    @MethodSource("argFactoryInvalidFormat")
+    void isNotValid(List<Long> data) {
+        assertThrows(ClassCastException.class, () -> tracker.updateStudentCoursePoints(data));
     }
 
-    @Test
-    @DisplayName("Should return false when first name is shorted")
-    void testFirstnameShorted() {
-        String name = "J.";
-        assertFalse(isValidName.test(name));
+    static List<Arguments> argStudentFactory() {
+        return List.of(
+                arguments("Jean-Clause", "van Helsing", "jc@google.it"),
+                arguments("Mary", "Luise Johnson", "maryj@google.com"),
+                arguments("John", "Doe", "johnd@yahoo.com"),
+                arguments("John", "Doe", "jdoe@yahoo.com"),
+                arguments("Jane", "Spark", "jspark@gmail.com"),
+                arguments("Jane", "Spark", "janes@gmail.com"));
     }
 
-    @Test
-    @DisplayName("Should return false when last name is shorted")
-    void testLastnameShorted() {
-        String name = "D.";
-        assertFalse(isValidName.test(name));
+    static List<Arguments> argCoursePointsFactory() {
+        return List.of(
+                arguments(List.of(1000L, 10L, 10L, 5L, 8L), false),
+                arguments(List.of(10001L, 10L, 10L, 5L, 8L), true),
+                arguments(List.of(10001L, 5L, 8L, 7L, 3L), true),
+                arguments(List.of(10000L, -1L, 2L, 2L, 2L), false),
+                arguments(List.of(10000L, 7L, 7L, 7L, 7L, 7L), false),
+                arguments(List.of(10000L, 5L, 5L, 5L, 5L), true),
+                arguments(List.of(10000L, 7L, 8L, 9L, 10L), true));
     }
 
-    @Test
-    @DisplayName("Should return false when first name is given with only one character")
-    void testFirstnameGivenWithOneCharacter() {
-        String name = "D";
-        assertFalse(isValidName.test(name));
+    static List<Arguments> argFactoryInvalidFormat() {
+        return List.of(
+                arguments(List.of(10000L, "?", 1L, 1L, 1L)));
     }
 
-    @Test
-    @DisplayName("Should return false when first name and last name contain invalid characters")
-    void testLastnameWithInvalidCharacter() {
-        String name = "Oğuz";
-        assertFalse(isValidName.test(name));
-    }
+    @Nested
+    class NestedTest {
 
-    @Test
-    @DisplayName("Should return false when first name contain chinese characters")
-    void testLastnameWithChineseCharacter() {
-        String name = "陳";
-        assertFalse(isValidName.test(name));
-    }
+        @Test
+        @DisplayName("Should return true when student by id = 1000 not found")
+        void isStudentNotFound() {
+            long invalidId = 1000;
+            assertTrue(tracker.isStudentNotFound(invalidId));
+        }
 
-    @Test
-    @DisplayName("Should return true when email is valid")
-    void testEmailWithFirstnameShortedValid() {
-        String email = "jdoe@mail.net";
-        assertTrue(isValidMail.test(email));
-    }
+        @Test
+        @DisplayName("Should return false when student by id = 10000 found")
+        void isStudentFound() {
+            long invalidId = 10000;
+            assertFalse(tracker.isStudentNotFound(invalidId));
+        }
 
-    @Test
-    @DisplayName("Should return true when email is valid")
-    void testEmailWithFullNameValid() {
-        String email = "jane.doe@yahoo.com";
-        assertTrue(isValidMail.test(email));
-    }
+        @ParameterizedTest (name = "Check that the progress data of student with id = {0} were updated correctly")
+        @MethodSource("argCoursePointsUpdateFactory")
+        void testCoursePointUpdateCorrectly(long studentId, String expected) {
+            Student student = tracker.getStudentMap().get(studentId);
+            assertEquals(expected, TrackerHelperFunction.stringifyProgressData(student));
+        }
 
-    @Test
-    @DisplayName("Should return false when email is incorrect")
-    void testEmailNotCorrectValid() {
-        String email = "email";
-        assertFalse(isValidMail.test(email));
+        static List<Arguments> argCoursePointsUpdateFactory() {
+            return List.of(
+                    arguments(10001L, "10001 points: Java=15; DSA=18; Databases=12; Spring=11"),
+                    arguments(10000L, "10000 points: Java=12; DSA=13; Databases=14; Spring=15"));
+        }
     }
 }

@@ -27,23 +27,6 @@ files:
         useJUnitPlatform()
     }
   learner_created: false
-- name: test/tracker/SampleTest.java
-  visible: true
-  text: |
-    package tracker;
-
-    import org.junit.jupiter.api.Test;
-
-    import static org.junit.jupiter.api.Assertions.*;
-
-    public class SampleTest {
-
-        @Test
-        void test() {
-            assertEquals(5, 2 + 3);
-        }
-    }
-  learner_created: false
 - name: test/LearningProgressTrackerTest.java
   visible: false
   text: |
@@ -2228,115 +2211,34 @@ files:
         List<String> findMin();
     }
   learner_created: true
-- name: test/tracker/TrackerTest.java
-  visible: true
-  text: |-
-    package tracker;
-
-    import org.junit.jupiter.api.DisplayName;
-    import org.junit.jupiter.api.Test;
-    import tracker.utils.Validator;
-
-    import java.util.function.Predicate;
-
-    import static org.junit.jupiter.api.Assertions.*;
-
-
-    class TrackerTest {
-
-
-        private final Predicate<String> isValidName = Validator::isValidName;
-        private final Predicate<String> isValidMail = Validator::isValidEmail;
-
-        @Test
-        @DisplayName("Should return true when first name contains hyphens")
-        void testFirstnameWithHyphens() {
-            String name = "Jean-Claude";
-            assertTrue(isValidName.test(name));
-        }
-
-        @Test
-        @DisplayName("Should return true when first name contains apostrophe")
-        void testFirstnameWithApostrophe() {
-            String name = "O'Neill";
-            assertTrue(isValidName.test(name));
-        }
-
-        @Test
-        @DisplayName("Should return true when last name contains space")
-        void testLastnameContainsSpace() {
-            String name = "van Helsing";
-            assertTrue(Validator.isValidLastname(name));
-        }
-
-        @Test
-        @DisplayName("Should return false when first name and last name contain invalid characters")
-        void testFirstnameWithInvalidCharacter() {
-            String name = "Stanisław";
-            assertFalse(isValidName.test(name));
-        }
-
-        @Test
-        @DisplayName("Should return false when first name is shorted")
-        void testFirstnameShorted() {
-            String name = "J.";
-            assertFalse(isValidName.test(name));
-        }
-
-        @Test
-        @DisplayName("Should return false when last name is shorted")
-        void testLastnameShorted() {
-            String name = "D.";
-            assertFalse(isValidName.test(name));
-        }
-
-        @Test
-        @DisplayName("Should return false when first name is given with only one character")
-        void testFirstnameGivenWithOneCharacter() {
-            String name = "D";
-            assertFalse(isValidName.test(name));
-        }
-
-        @Test
-        @DisplayName("Should return false when first name and last name contain invalid characters")
-        void testLastnameWithInvalidCharacter() {
-            String name = "Oğuz";
-            assertFalse(isValidName.test(name));
-        }
-
-        @Test
-        @DisplayName("Should return false when first name contain chinese characters")
-        void testLastnameWithChineseCharacter() {
-            String name = "陳";
-            assertFalse(isValidName.test(name));
-        }
-
-        @Test
-        @DisplayName("Should return true when email is valid")
-        void testEmailWithFirstnameShortedValid() {
-            String email = "jdoe@mail.net";
-            assertTrue(isValidMail.test(email));
-        }
-
-        @Test
-        @DisplayName("Should return true when email is valid")
-        void testEmailWithFullNameValid() {
-            String email = "jane.doe@yahoo.com";
-            assertTrue(isValidMail.test(email));
-        }
-
-        @Test
-        @DisplayName("Should return false when email is incorrect")
-        void testEmailNotCorrectValid() {
-            String email = "email";
-            assertFalse(isValidMail.test(email));
-        }
-    }
-  learner_created: false
 - name: src/tracker/notification/NotificationService.java
   visible: true
   learner_created: true
 - name: src/tracker/notification/NotificationServiceImpl.java
+  visible: true
+  learner_created: true
+- name: test/tracker/model/StudentTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/model/CourseTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/statistics/TrackerAnalyserAnotherTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/statistics/TrackerAnalyserSecondTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/utils/StudentIdGeneratorTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/BetaTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/utils/TrackerAnalyserTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/utils/ValidatorTest.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/14400#comment
