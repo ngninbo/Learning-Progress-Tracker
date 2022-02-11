@@ -10,18 +10,20 @@ class Name {
 
         String firstName1 = scanner.next();
         String lastName1 = scanner.next();
-        System.out.println(firstName1 + " " + lastName1);
+        System.out.println(getFullName(firstName1, lastName1));
 
         String firstName2 = scanner.next();
         String lastName2 = scanner.next();
-        System.out.println(firstName2 + " " + lastName2);
+        System.out.println(getFullName(firstName2, lastName2));
 
         String firstName3 = scanner.next();
         String lastName3 = scanner.next();
-        System.out.println(firstName3 + " " + lastName3);
+        System.out.println(getFullName(firstName3, lastName3));
 
     }
 
     //implement your method here
-    public static String ...
+    public static String getFullName(String firstName, String lastname) {
+        return String.format("%s %s", firstName, lastname);
+    }
 }
