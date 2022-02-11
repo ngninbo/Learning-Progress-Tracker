@@ -1,0 +1,80 @@
+# Project exclude paths
+/.gradle/
+/Learning Progress Tracker/task/build/
+/Learning Progress Tracker/task/out/
+/Learning Progress Tracker/task/out/production/classes/
+/Topics/Bean validation/Add two annotations/build/
+/Topics/Choosing the right collection/Even numbers go first/out/
+/Topics/Choosing the right collection/Even numbers go first/out/production/classes/
+/Topics/Choosing the right collection/Removing duplicates and sorting/out/
+/Topics/Choosing the right collection/Removing duplicates and sorting/out/production/classes/
+/Topics/Choosing the right collection/Substitution cipher/out/
+/Topics/Choosing the right collection/Substitution cipher/out/production/classes/
+/Topics/Choosing the right collection/War and Peace/out/
+/Topics/Choosing the right collection/War and Peace/out/production/classes/
+/Topics/Conditional statement/The army of units/out/
+/Topics/Conditional statement/The army of units/out/production/classes/
+/Topics/Floating-point types/Area of a circle/out/
+/Topics/Floating-point types/Area of a circle/out/production/classes/
+/Topics/Floating-point types/Celsius to Fahrenheit/out/
+/Topics/Floating-point types/Celsius to Fahrenheit/out/production/classes/
+/Topics/Floating-point types/Difference between two doubles/out/
+/Topics/Floating-point types/Difference between two doubles/out/production/classes/
+/Topics/Floating-point types/Distance/out/
+/Topics/Floating-point types/Distance/out/production/classes/
+/Topics/Floating-point types/Evaluate an expression/out/
+/Topics/Floating-point types/Evaluate an expression/out/production/classes/
+/Topics/Floating-point types/Exponential expression/out/
+/Topics/Floating-point types/Exponential expression/out/production/classes/
+/Topics/Floating-point types/Find X/out/
+/Topics/Floating-point types/Find X/out/production/classes/
+/Topics/Floating-point types/Liquid pressure/out/
+/Topics/Floating-point types/Liquid pressure/out/production/classes/
+/Topics/Functional decomposition/Decompose a math function/out/
+/Topics/Functional decomposition/Decompose a math function/out/production/classes/
+/Topics/Iterating over arrays/Does an array contain N?/out/
+/Topics/Iterating over arrays/Does an array contain N?/out/production/classes/
+/Topics/Iterating over arrays/The index of the first max in an array/out/
+/Topics/Iterating over arrays/The index of the first max in an array/out/production/classes/
+/Topics/Iterating over arrays/The maximum product of adjacent elements/out/
+/Topics/Iterating over arrays/The maximum product of adjacent elements/out/production/classes/
+/Topics/Iterating over arrays/The minimum value of an array/out/
+/Topics/Iterating over arrays/The minimum value of an array/out/production/classes/
+/Topics/Iterating over arrays/Theory/out/
+/Topics/Iterating over arrays/Theory/out/production/classes/
+/Topics/LinkedList vs. ArrayList/Remove the same/out/
+/Topics/LinkedList vs. ArrayList/Remove the same/out/production/classes/
+/Topics/Queue and Stack/Creating queue/out/
+/Topics/Queue and Stack/Creating queue/out/production/classes/
+/Topics/Queue and Stack/Greedy load balance/out/
+/Topics/Queue and Stack/Greedy load balance/out/production/classes/
+/Topics/Queue and Stack/The LIFO principle in action/out/
+/Topics/Queue and Stack/The LIFO principle in action/out/production/classes/
+/Topics/Queue and Stack/Theory/out/
+/Topics/Queue and Stack/Theory/out/production/classes/
+/Topics/Queue and Stack/Working with queue/out/
+/Topics/Queue and Stack/Working with queue/out/production/classes/
+/Topics/Relational operators/Is between/out/
+/Topics/Relational operators/Is between/out/production/classes/
+/Topics/The for-loop/Arithmetic average/out/
+/Topics/The for-loop/Arithmetic average/out/production/classes/
+/Topics/The for-loop/Fizz Buzz/out/
+/Topics/The for-loop/Fizz Buzz/out/production/classes/
+/Topics/The for-loop/Numbers divisible by six/out/
+/Topics/The for-loop/Numbers divisible by six/out/production/classes/
+/Topics/The for-loop/Size of parts/out/
+/Topics/The for-loop/Size of parts/out/production/classes/
+/Topics/The for-loop/The count of numbers divisible by N/out/
+/Topics/The for-loop/The count of numbers divisible by N/out/production/classes/
+/Topics/The for-loop/The product of numbers from a to b/out/
+/Topics/The for-loop/The product of numbers from a to b/out/production/classes/
+/Topics/The for-loop/The roots of an equation/out/
+/Topics/The for-loop/The roots of an equation/out/production/classes/
+/Topics/The for-loop/The sum of integers from a to b/out/
+/Topics/The for-loop/The sum of integers from a to b/out/production/classes/
+/Topics/The Map interface/Modifying a map/out/
+/Topics/The Map interface/Modifying a map/out/production/classes/
+/Topics/The while and do-while loops/The sequence/out/
+/Topics/The while and do-while loops/The sequence/out/production/classes/
+/Topics/The while and do-while loops/The sum of elements/out/
+/Topics/The while and do-while loops/The sum of elements/out/production/classes/

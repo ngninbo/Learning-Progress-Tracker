@@ -1,0 +1,2348 @@
+type: edu
+files:
+- name: src/tracker/Main.java
+  visible: true
+  text: |
+    package tracker;
+
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println("Hello, World!");
+        }
+    }
+  learner_created: false
+- name: build.gradle
+  visible: true
+  text: |
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.7.1'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+  learner_created: false
+- name: test/tracker/SampleTest.java
+  visible: true
+  text: |
+    package tracker;
+
+    import org.junit.jupiter.api.Test;
+
+    import static org.junit.jupiter.api.Assertions.*;
+
+    public class SampleTest {
+
+        @Test
+        void test() {
+            assertEquals(5, 2 + 3);
+        }
+    }
+  learner_created: false
+- name: test/LearningProgressTrackerTest.java
+  visible: false
+  text: |
+    import org.hyperskill.hstest.dynamic.DynamicTest;
+    import org.hyperskill.hstest.exception.outcomes.WrongAnswer;
+    import org.hyperskill.hstest.stage.StageTest;
+    import org.hyperskill.hstest.testcase.CheckResult;
+    import org.hyperskill.hstest.testing.TestedProgram;
+
+    import java.util.ArrayList;
+    import java.util.Arrays;
+    import java.util.Collections;
+    import java.util.HashSet;
+    import java.util.List;
+    import java.util.Random;
+    import java.util.Set;
+    import java.util.function.Predicate;
+    import java.util.stream.Collectors;
+    import java.util.stream.IntStream;
+    import java.util.stream.Stream;
+
+    import static org.hyperskill.hstest.testing.expect.Expectation.expect;
+
+    public class LearningProgressTrackerTest extends StageTest<String> {
+        private static final Random rnd = new Random();
+
+        @DynamicTest(order = 1)
+        CheckResult testStartAndExit() {
+            TestedProgram main = new TestedProgram();
+            String output = main.start();
+            expect(output).toContain(1).lines();
+            if (incorrectString(output, "Learning Progress Tracker")) {
+                return CheckResult.wrong("When started, your program " +
+                        "should print \"Learning Progress Tracker\"");
+            }
+
+            if (!main.isWaitingInput()) {
+                return CheckResult.wrong("After the start, your program should " +
+                        "be ready to accept commands from the user");
+            }
+
+            output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (!main.isWaitingInput()) {
+                return CheckResult.wrong("Your program should keep running after the 'back' " +
+                        "command is entered");
+            }
+
+            if (anyMissingKeywords(output, "enter", "exit", "program")) {
+                return CheckResult.wrong("When 'back' command is entered your program " +
+                        "should print the hint \"Enter 'exit' to exit the program.\"");
+            }
+
+            output = main.execute("exit");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "bye")) {
+                return CheckResult.wrong("When the 'exit' command is entered, " +
+                        "your program should say bye to the user");
+            }
+
+            if (!main.isFinished()) {
+                return CheckResult.wrong("After the 'exit' command has been entered, " +
+                        "your program should stop working");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 2, data = "getBlankInput")
+        CheckResult testBlankInput(String input) {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            String output = main.execute(input);
+            expect(output).toContain(1).lines();
+            if (incorrectString(output, "no input")) {
+                return CheckResult.wrong("When the user enters an empty or blank " +
+                        "string, your program should print \"No input.\"");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 3, data = "getUnknownCommands")
+        CheckResult testUnknownCommands(String input) {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            String output = main.execute(input);
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "unknown", "command")) {
+                return CheckResult.wrong("When an unknown command is entered, your " +
+                        "program should display an error message: \"Unknown command!\"");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 4)
+        CheckResult testAddStudents1() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            String output = main.execute("add students");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output,
+                    "enter", "student", "credentials", "back", "return")) {
+                return CheckResult.wrong("When 'add students' command is entered, your " +
+                        "program should display the prompt \"Enter student credentials or " +
+                        "'back' to return:\"");
+            }
+
+            output = main.execute("exit");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "incorrect", "credentials")) {
+                return CheckResult.wrong("Expected output: \"Incorrect credentials.\", " +
+                        "but your output was: " + output);
+            }
+
+            output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "total", "0", "students", "added")) {
+                return CheckResult.wrong("Expected: \"Total 0 students have been added.\", but " +
+                        "your output was: " + output);
+            }
+
+            output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "enter", "exit", "program")) {
+                return CheckResult.wrong("When 'back' command is entered your program " +
+                        "should stop waiting for student credentials");
+            }
+
+            output = main.execute("exit");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "bye")) {
+                return CheckResult.wrong("When the 'exit' command is entered, " +
+                        "your program should say bye to the user");
+            }
+
+            if (!main.isFinished()) {
+                return CheckResult.wrong("After the 'exit' command has been entered, " +
+                        "your program should stop working");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 5)
+        CheckResult testAddStudents2() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            main.execute("add students");
+            for (String input : getCorrectCredentials()) {
+                String output = main.execute(input);
+                expect(output).toContain(1).lines();
+                if (anyMissingKeywords(output, "student", "added")) {
+                    return CheckResult.wrong("Expected output: \"The student has been added.\", but your " +
+                            "output was: " + output);
+                }
+            }
+
+            String output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "total", "10", "students", "added")) {
+                return CheckResult.wrong("Expected: \"Total 10 students have been added.\", but " +
+                        "your output was: " + output);
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 6)
+        CheckResult testAddStudents3() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            for (String[] args : getIncorrectCredentials()) {
+                String output = main.execute(args[0]);
+                expect(output).toContain(1).lines();
+                if (incorrectString(output, args[1])) {
+                    return CheckResult.wrong("Expected output: \"" + args[1] + "\", but your " +
+                            "output was: " + output);
+                }
+            }
+
+            String output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "total", "0", "students", "added")) {
+                return CheckResult.wrong("Expected: \"Total 0 students have been added.\", but " +
+                        "your output was: " + output);
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 7)
+        CheckResult testFindAll1() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+            main.execute("back");
+
+            String output = main.execute("list");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "no", "found")) {
+                return CheckResult.wrong("Expected: \"No students found.\", but " +
+                        "your output was: " + output);
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 8)
+        CheckResult testAddDoubles() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            List<String> credentials = getRandomCredentials(12);
+            for (String arg : credentials) {
+                String output = main.execute(arg);
+                expect(output).toContain(1).lines();
+                if (anyMissingKeywords(output, "student", "added")) {
+                    return CheckResult.wrong("Expected output: \"The student has been added.\", but your " +
+                            "output was: " + output);
+                }
+
+                output = main.execute(arg);
+                expect(output).toContain(1).lines();
+                if (anyMissingKeywords(output, "this", "email", "already", "taken")) {
+                    return CheckResult.wrong("Expected output: \"This email is already taken.\", but your " +
+                            "output was: " + output);
+                }
+            }
+
+            String output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "total", String.valueOf(credentials.size()), "students", "added")) {
+                return CheckResult.wrong("Expected: \"Total " + credentials.size() + "students have been added.\", but " +
+                        "your output was: " + output);
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 9)
+        CheckResult testFindAll2() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            List<String> credentials = getRandomCredentials(12);
+            for (String arg : credentials) {
+                String output = main.execute(arg);
+                expect(output).toContain(1).lines();
+                if (anyMissingKeywords(output, "student", "added")) {
+                    main.stop();
+                    return CheckResult.wrong("Expected output: \"The student has been added.\", but your " +
+                            "output was: " + output);
+                }
+            }
+
+            String output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "total", String.valueOf(credentials.size()), "students", "added")) {
+                return CheckResult.wrong("Expected: \"Total " + credentials.size() + "students have been added.\", but " +
+                        "your output was: " + output);
+            }
+
+            output = main.execute("list");
+            List<String> lines = expect(output).toContain(credentials.size() + 1).lines();
+            if (!lines.get(0).toLowerCase().contains("students")) {
+                return CheckResult.wrong("Expected the header \"Students:\" but your first line was: " + lines.get(0));
+            }
+
+            List<String> ids = parseIds(lines);
+            Set<String> uniqueIds = new HashSet<>(ids);
+            if (uniqueIds.size() != ids.size()) {
+                return CheckResult.wrong("Expected " + ids.size() +
+                        " unique IDs but found only " + uniqueIds.size());
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 10)
+        CheckResult testBackFromAddPoints() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            String output = main.execute("add points");
+            expect(output).toContain().lines();
+            if (anyMissingKeywords(output, "enter", "id", "points", "back", "return")) {
+                return CheckResult.wrong("When 'add points' command is entered, your program should print " +
+                        "\"Enter an id and points or 'back' to return:\" but your output was: " + output);
+            }
+
+            main.execute("back");
+            output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "enter", "exit", "program")) {
+                return CheckResult.wrong("When 'back' command is entered your program " +
+                        "should stop waiting for student id and points");
+            }
+
+            output = main.execute("exit");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "bye")) {
+                return CheckResult.wrong("When the 'exit' command is entered, " +
+                        "your program should say bye to the user");
+            }
+
+            if (!main.isFinished()) {
+                return CheckResult.wrong("After the 'exit' command has been entered, " +
+                        "your program should stop working");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 11)
+        CheckResult testStudentPoints1() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            List<String> credentials = getRandomCredentials(6);
+            for (String arg : credentials) {
+                main.execute(arg);
+            }
+
+            main.execute("back");
+            String output = main.execute("list");
+            List<String> lines = expect(output).toContain().lines();
+            List<String> ids = parseIds(lines);
+
+            main.execute("add points");
+            String[] points = getIncorrectPoints();
+            for (String point : points) {
+                output = main.execute(ids.get(0) + " " + point);
+                expect(output).toContain().lines();
+                if (anyMissingKeywords(output, "incorrect", "format")) {
+                    return CheckResult.wrong("Expected output: \"Incorrect points format.\", but your output was: " + output);
+                }
+            }
+
+            output = main.execute("imsurethereisnosuchstudentid 1 1 1 1");
+            expect(output).toContain().lines();
+            if (anyMissingKeywords(output, "no", "student", "found") ||
+                    !output.contains("imsurethereisnosuchstudentid")) {
+                return CheckResult.wrong("Expected output was: \"No student is found " +
+                        "for id=imsurethereisnosuchstudentid.\" but your output was: " + output);
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 12)
+        CheckResult testStudentPoints2() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            List<String> credentials = getRandomCredentials(6);
+            for (String arg : credentials) {
+                main.execute(arg);
+            }
+            main.execute("back");
+
+            String output = main.execute("list");
+            List<String> lines = expect(output).toContain().lines();
+            List<String> ids = parseIds(lines);
+
+            main.execute("add points");
+            String[] points = getCorrectPoints(6);
+
+            for (int i = 0; i < points.length; i++) {
+                output = main.execute(ids.get(i) + " " + points[i]);
+                expect(output).toContain(1).lines();
+                if (anyMissingKeywords(output, "points", "updated")) {
+                    return CheckResult.wrong("Expected \"Points updated.\" but your output was " + output);
+                }
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 13)
+        CheckResult testBackFromFind() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            String output = main.execute("find");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "enter", "id", "back", "return")) {
+                return CheckResult.wrong("When 'find' command is entered, you program should " +
+                        "print \"Enter an id or 'back' to return:\", but your output was: " + output);
+            }
+
+            main.execute("back");
+            output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "enter", "exit", "program")) {
+                return CheckResult.wrong("When 'back' command is entered your program " +
+                        "should stop waiting for student id");
+            }
+
+            output = main.execute("exit");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "bye")) {
+                return CheckResult.wrong("When the 'exit' command is entered, " +
+                        "your program should say bye to the user");
+            }
+
+            if (!main.isFinished()) {
+                return CheckResult.wrong("After the 'exit' command has been entered, " +
+                        "your program should stop working");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 14)
+        CheckResult testFindByID() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            List<String> credentials = getRandomCredentials(5);
+            for (String arg : credentials) {
+                main.execute(arg);
+            }
+            main.execute("back");
+
+            String output = main.execute("list");
+            List<String> lines = expect(output).toContain().lines();
+            List<String> ids = parseIds(lines);
+
+            main.execute("add points");
+            for (int i = 0; i < ids.size(); i++) {
+                main.execute(String.format("%s %d %d %d %d", ids.get(i), i, i, i, i));
+                main.execute(String.format("%s %d %d %d %d", ids.get(i), i, i, i, i));
+            }
+
+            main.execute("back");
+            output = main.execute("find");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "enter", "id", "back", "return")) {
+                return CheckResult.wrong("When 'find' command is entered, you program should " +
+                        "print \"Enter an id or 'back' to return:\", but your output was: " + output);
+            }
+
+            for (int i = 0; i < ids.size(); i++) {
+                output = main.execute(ids.get(i));
+                expect(output).toContain(1).lines();
+                String expected = String.format(
+                        "%s points: Java=%d; DSA=%d; Databases=%d; Spring=%d",
+                        ids.get(i), i * 2, i * 2, i * 2, i * 2
+                );
+                if (incorrectString(output, expected)) {
+                    return CheckResult.wrong("Expected output: " + expected +
+                            ", but your output was: " + output);
+                }
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 15)
+        CheckResult testBackFromStatistics() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            String output = main.execute("statistics");
+            main.execute("back");
+            output = main.execute("back");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "enter", "exit", "program")) {
+                return CheckResult.wrong("When 'back' command is entered your program " +
+                        "should stop waiting for student id");
+            }
+
+            output = main.execute("exit");
+            expect(output).toContain(1).lines();
+            if (anyMissingKeywords(output, "bye")) {
+                return CheckResult.wrong("When the 'exit' command is entered, " +
+                        "your program should say bye to the user");
+            }
+
+            if (!main.isFinished()) {
+                return CheckResult.wrong("After the 'exit' command has been entered, " +
+                        "your program should stop working");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 16)
+        CheckResult testStatistics1() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            String output = main.execute("statistics");
+            String[] lines = Arrays.stream(output.split("\n"))
+                    .filter(Predicate.not(String::isBlank))
+                    .toArray(String[]::new);
+
+            if (anyMissingKeywords(lines[0], "course", "details", "back", "quit")) {
+                return CheckResult.wrong("When the \"statistics\" command is entered, your " +
+                        "program must print: \"Type the name of a course to see details or 'back' " +
+                        "to quit:\", but your output was: " + lines[0]);
+            }
+
+            if (lines.length < 7) {
+                return CheckResult.wrong("Your program should print a header and 6 " +
+                        "categories, but you printed only " + lines.length + " lines");
+            }
+
+            List<String> categories = List.of("Most popular: n/a", "Least popular: n/a",
+                    "Highest activity: n/a", "Lowest activity: n/a", "Easiest course: n/a",
+                    "Hardest course: n/a");
+            for (int i = 1; i < lines.length; i++) {
+                if (incorrectString(lines[i], categories.get(i - 1))) {
+                    return CheckResult.wrong("Expected: " + categories.get(i - 1) +
+                            ", but your output was " + lines[i]);
+                }
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 17)
+        CheckResult testStatistics2() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("statistics");
+
+            List<String> courses = List.of("Java", "DSA", "Databases", "Spring");
+            for (String course : courses) {
+                String output = main.execute(course);
+                String[] lines = output.split("\n");
+                if (lines.length < 2) {
+                    return CheckResult.wrong("Expected 2 lines, but your output was only " + lines.length + " lines.");
+                }
+
+                if (incorrectString(lines[0], course.toLowerCase())) {
+                    return CheckResult.wrong("Your first line should be " + course + ", but your output was " + lines[0]);
+                }
+
+                if (anyMissingKeywords(lines[1], "id", "points", "completed")) {
+                    return CheckResult.wrong("Your second line should be \"id\tpoints\tcompleted\", " +
+                            "but your output was " + lines[1]);
+                }
+            }
+
+            List<String> unknown = Arrays.stream(getUnknownCommands())
+                    .filter(str -> courses.stream().noneMatch(it -> it.trim().equalsIgnoreCase(str)))
+                    .collect(Collectors.toList());
+
+            for (String course : unknown) {
+                String output = main.execute(course);
+                if (incorrectString(output, "unknown course")) {
+                    return CheckResult.wrong("Expected output: \"Unknown course.\", but your output was: " + output);
+                }
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 18)
+        CheckResult testStatistics3() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("statistics");
+
+            main.execute("back");
+            if (!main.isWaitingInput()) {
+                return CheckResult.wrong("Your program should keep running after the 'back' " +
+                        "command is entered");
+            }
+
+            String output = main.execute("back");
+            if (anyMissingKeywords(output, "enter", "exit", "program")) {
+                return CheckResult.wrong("When 'back' command is entered your program " +
+                        "should print the hint \"Enter 'exit' to exit the program.\"");
+            }
+
+            output = main.execute("exit");
+            if (anyMissingKeywords(output, "bye")) {
+                return CheckResult.wrong("When the 'exit' command is entered, " +
+                        "your program should say bye to the user");
+            }
+
+            if (!main.isFinished()) {
+                return CheckResult.wrong("After the 'exit' command has been entered, " +
+                        "your program should stop working");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 19)
+        CheckResult testCategories1() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            getRandomCredentials(4).forEach(main::execute);
+
+            main.execute("back");
+            String output = main.execute("list");
+            List<String> lines = expect(output).toContain().lines();
+            List<String> ids = parseIds(lines);
+
+            main.execute("add points");
+            for (String id : ids) {
+                main.execute(String.format("%s 5 4 3 1", id));
+            }
+
+            main.execute("back");
+            lines = expect(main.execute("statistics")).toContain().lines();
+
+            if (anyMissingKeywords(lines.get(1), "java", "dsa", "databases", "spring")) {
+                return CheckResult.wrong("Expected most popular: Java, DSA, Databases, Spring, " +
+                        "but your output was: " + lines.get(1));
+            }
+
+            if (!lines.get(2).toLowerCase().contains("n/a")) {
+                return CheckResult.wrong("Expected least popular: n/a, " +
+                        "but your output was: " + lines.get(2));
+            }
+
+            if (anyMissingKeywords(lines.get(3), "java", "dsa", "databases", "spring")) {
+                return CheckResult.wrong("Expected top activity: Java, DSA, Databases, Spring, " +
+                        "but your output was: " + lines.get(3));
+            }
+
+            if (!lines.get(4).contains("n/a")) {
+                return CheckResult.wrong("Expected lowest activity: n/a, " +
+                        "but your output was: " + lines.get(4));
+            }
+
+            if (anyMissingKeywords(lines.get(5), "java")) {
+                return CheckResult.wrong("Expected easiest course: Java, " +
+                        "but your output was: " + lines.get(5));
+            }
+
+            if (anyMissingKeywords(lines.get(6), "Spring")) {
+                return CheckResult.wrong("Expected hardest course: Spring, " +
+                        "but your output was: " + lines.get(6));
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 20)
+        CheckResult testCategories2() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            getRandomCredentials(4).forEach(main::execute);
+
+            main.execute("back");
+            List<String> lines = expect(main.execute("list")).toContain().lines();
+            List<String> ids = parseIds(lines);
+
+            main.execute("add points");
+            main.execute(String.format("%s 10 10 10 10", ids.get(0)));
+            main.execute(String.format("%s 5 5 5 5", ids.get(1)));
+            main.execute(String.format("%s 5 5 5 5", ids.get(2)));
+            main.execute(String.format("%s 2 2 2 2", ids.get(3)));
+
+            main.execute("back");
+            main.execute("statistics");
+
+            List<String> linesJava = expect(main.execute("Java")).toContain(6).lines();
+            List<String> linesDsa = expect(main.execute("DSA")).toContain(6).lines();
+            List<String> linesDb = expect(main.execute("Databases")).toContain(6).lines();
+            List<String> linesSpring = expect(main.execute("Spring")).toContain(6).lines();
+
+            if (!linesJava.get(2).matches(".+\\s+10\\s+1\\.7\\s?%.*") ||
+                    !linesJava.get(3).matches(".+\\s+5\\s+0\\.8\\s?%.*") ||
+                    !linesJava.get(4).matches(".+\\s+5\\s+0\\.8\\s?%.*") ||
+                    !linesJava.get(5).matches(".+\\s+2\\s+0\\.3\\s?%.*") ||
+                    !linesJava.get(2).startsWith(ids.get(0)) ||
+                    !linesJava.get(3).startsWith(ids.get(1)) && !linesJava.get(3).startsWith(ids.get(2)) ||
+                    !linesJava.get(4).startsWith(ids.get(1)) && !linesJava.get(4).startsWith(ids.get(2)) ||
+                    !linesJava.get(5).startsWith(ids.get(3)) ||
+                    linesJava.get(3).startsWith(ids.get(1)) && ids.get(1).compareTo(ids.get(2)) >= 0 ||
+                    linesJava.get(3).startsWith(ids.get(2)) && ids.get(2).compareTo(ids.get(1)) >= 0) {
+                return CheckResult.wrong("Your Java student list either contains incorrect data or is incorrectly sorted");
+            }
+
+            if (!linesDsa.get(2).matches(".+\\s+10\\s+2\\.5\\s?%.*") ||
+                    !linesDsa.get(3).matches(".+\\s+5\\s+1\\.3\\s?%.*") ||
+                    !linesDsa.get(4).matches(".+\\s+5\\s+1\\.3\\s?%.*") ||
+                    !linesDsa.get(5).matches(".+\\s+2\\s+0\\.5\\s?%.*") ||
+                    !linesDsa.get(2).startsWith(ids.get(0)) ||
+                    !linesDsa.get(3).startsWith(ids.get(1)) && !linesDsa.get(3).startsWith(ids.get(2)) ||
+                    !linesDsa.get(4).startsWith(ids.get(1)) && !linesDsa.get(4).startsWith(ids.get(2)) ||
+                    !linesDsa.get(5).startsWith(ids.get(3)) ||
+                    linesDsa.get(3).startsWith(ids.get(1)) && ids.get(1).compareTo(ids.get(2)) >= 0 ||
+                    linesDsa.get(3).startsWith(ids.get(2)) && ids.get(2).compareTo(ids.get(1)) >= 0) {
+                return CheckResult.wrong("Your DSA student list either contains incorrect data or is incorrectly sorted");
+            }
+
+            if (!linesDb.get(2).matches(".+\\s+10\\s+2\\.1\\s?%.*") ||
+                    !linesDb.get(3).matches(".+\\s+5\\s+1\\.0\\s?%.*") ||
+                    !linesDb.get(4).matches(".+\\s+5\\s+1\\.0\\s?%.*") ||
+                    !linesDb.get(5).matches(".+\\s+2\\s+0\\.4\\s?%.*") ||
+                    !linesDb.get(2).startsWith(ids.get(0)) ||
+                    !linesDb.get(3).startsWith(ids.get(1)) && !linesDb.get(3).startsWith(ids.get(2)) ||
+                    !linesDb.get(4).startsWith(ids.get(1)) && !linesDb.get(4).startsWith(ids.get(2)) ||
+                    !linesDb.get(5).startsWith(ids.get(3)) ||
+                    linesDb.get(3).startsWith(ids.get(1)) && ids.get(1).compareTo(ids.get(2)) >= 0 ||
+                    linesDb.get(3).startsWith(ids.get(2)) && ids.get(2).compareTo(ids.get(1)) >= 0) {
+                return CheckResult.wrong("Your Databases student list either contains incorrect data " +
+                        "or is incorrectly sorted");
+            }
+
+            if (!linesSpring.get(2).matches(".+\\s+10\\s+1\\.8\\s?%.*") ||
+                    !linesSpring.get(3).matches(".+\\s+5\\s+0\\.9\\s?%.*") ||
+                    !linesSpring.get(4).matches(".+\\s+5\\s+0\\.9\\s?%.*") ||
+                    !linesSpring.get(5).matches(".+\\s+2\\s+0\\.4\\s?%.*") ||
+                    !linesSpring.get(2).startsWith(ids.get(0)) ||
+                    !linesSpring.get(3).startsWith(ids.get(1)) && !linesSpring.get(3).startsWith(ids.get(2)) ||
+                    !linesSpring.get(4).startsWith(ids.get(1)) && !linesSpring.get(4).startsWith(ids.get(2)) ||
+                    !linesSpring.get(5).startsWith(ids.get(3)) ||
+                    linesSpring.get(3).startsWith(ids.get(1)) && ids.get(1).compareTo(ids.get(2)) >= 0 ||
+                    linesSpring.get(3).startsWith(ids.get(2)) && ids.get(2).compareTo(ids.get(1)) >= 0) {
+                return CheckResult.wrong("Your Spring student list either contains incorrect data " +
+                        "or is incorrectly sorted");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 21)
+        CheckResult testCategories3() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+            main.execute("add students");
+
+            main.execute("John Doe johnd@email.net");
+            main.execute("Jane Spark jspark@yahoo.com");
+            main.execute("back");
+
+            List<String> lines = expect(main.execute("list")).toContain().lines();
+            List<String> ids = parseIds(lines);
+
+            main.execute("add points");
+            main.execute(String.format("%s 8 7 7 5", ids.get(0)));
+            main.execute(String.format("%s 7 6 9 7", ids.get(0)));
+            main.execute(String.format("%s 6 5 5 0", ids.get(0)));
+            main.execute(String.format("%s 8 0 8 6", ids.get(1)));
+            main.execute(String.format("%s 7 0 0 0", ids.get(1)));
+            main.execute(String.format("%s 9 0 0 5", ids.get(1)));
+
+            main.execute("back");
+            main.execute("statistics");
+
+            List<String> linesJava = expect(main.execute("Java")).toContain(4).lines();
+            List<String> linesDsa = expect(main.execute("DSA")).toContain(3).lines();
+            List<String> linesDb = expect(main.execute("Databases")).toContain(4).lines();
+            List<String> linesSpring = expect(main.execute("Spring")).toContain(4).lines();
+
+            if (!linesJava.get(2).matches(".+\\s+24\\s+4\\.0\\s?%.*") ||
+                    !linesJava.get(3).matches(".+\\s+21\\s+3\\.5\\s?%.*") ||
+                    !linesJava.get(2).startsWith(ids.get(1)) || !linesJava.get(3).startsWith(ids.get(0))) {
+                return CheckResult.wrong("Your Java student list either contains incorrect data or is incorrectly sorted");
+            }
+
+            if (!linesDsa.get(2).matches(".+\\s+18\\s+4\\.5\\s?%.*") || !linesDsa.get(2).startsWith(ids.get(0))) {
+                return CheckResult.wrong("Your DSA student list either contains incorrect data or is incorrectly sorted");
+            }
+
+            if (!linesDb.get(2).matches(".+\\s+21\\s+4\\.4\\s?%.*") ||
+                    !linesDb.get(3).matches(".+\\s+8\\s+1\\.7\\s?%.*") ||
+                    !linesDb.get(2).startsWith(ids.get(0)) || !linesDb.get(3).startsWith(ids.get(1))) {
+                return CheckResult.wrong("Your Databases student list either contains incorrect data " +
+                        "or is incorrectly sorted");
+            }
+
+            if (!linesSpring.get(2).matches(".+\\s+12\\s+2\\.2\\s?%.*") ||
+                    !linesSpring.get(3).matches(".+\\s+11\\s+2\\.0\\s?%.*") ||
+                    !linesSpring.get(2).startsWith(ids.get(0)) || !linesSpring.get(3).startsWith(ids.get(1))) {
+                return CheckResult.wrong("Your Spring student list either contains incorrect data " +
+                        "or is incorrectly sorted");
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 22)
+        CheckResult testNotification1() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            List<String> output = expect(main.execute("notify")).toContain(1).lines();
+            if (output.stream()
+                    .map(String::toLowerCase)
+                    .allMatch(str -> anyMissingKeywords(str, "total", "0", "notified"))) {
+                return CheckResult.wrong("Expected output was \"Total 0 students have been notified.\", " +
+                        "but your output was: " + String.join("\n", output));
+            }
+
+            return CheckResult.correct();
+        }
+
+        @DynamicTest(order = 23)
+        CheckResult testNotification2() {
+            TestedProgram main = new TestedProgram();
+            main.start();
+
+            main.execute("add students");
+            main.execute("John Doe johnd@email.net");
+            main.execute("Jane Spark jspark@yahoo.com");
+            main.execute("back");
+
+            List<String> lines = expect(main.execute("list")).toContain().lines();
+            List<String> ids = parseIds(lines);
+
+            main.execute("add points");
+            main.execute(String.format("%s 600 400 0 0", ids.get(0)));
+            main.execute("back");
+
+            List<String> output = expect(main.execute("notify")).toContain(7).lines();
+
+            if (!output.get(0).toLowerCase().startsWith("to:") ||
+                    !output.get(0).toLowerCase().contains("johnd@email.net") ||
+                    !output.get(1).toLowerCase().startsWith("re:") ||
+                    anyMissingKeywords(output.get(1), "learning", "progress") ||
+                    anyMissingKeywords(output.get(2), "john", "doe", "accomplished") ||
+                    !output.get(2).toLowerCase().contains("java") && !output.get(5).toLowerCase().contains("java")) {
+                return CheckResult.wrong("You program should have printed the following:\nTo: johnd@email.net\n" +
+                        "Re: Your Learning Progress\nHello, John Doe! You have accomplished our Java course!\n" +
+                        "but your output was: \n" + output.stream().limit(3).collect(Collectors.joining("\n")));
+            }
+
+            if (!output.get(3).toLowerCase().startsWith("to:") ||
+                    !output.get(3).toLowerCase().contains("johnd@email.net") ||
+                    !output.get(4).toLowerCase().startsWith("re:") ||
+                    anyMissingKeywords(output.get(4), "learning", "progress") ||
+                    anyMissingKeywords(output.get(5), "john", "doe", "accomplished", "course") ||
+                    !output.get(5).toLowerCase().contains("dsa") && !output.get(2).toLowerCase().contains("dsa")) {
+                return CheckResult.wrong("You program should have printed the following:\nTo: johnd@email.net\n" +
+                        "Re: Your Learning Progress\nHello, John Doe! You have accomplished our DSA course!\n" +
+                        "but your output was: \n" + output.stream().limit(3).collect(Collectors.joining("\n")));
+            }
+
+            if (anyMissingKeywords(output.get(6).toLowerCase(), "total", "1", "notified")) {
+                return CheckResult.wrong("Expected output was \"Total 1 student has been notified.\", but your output was: \n" +
+                        String.join("\n", output));
+            }
+
+            if (output.stream().map(String::toLowerCase).anyMatch(str ->
+                    str.contains("jane") || str.contains("spark") || str.contains("jspark@yahoo.com"))) {
+                return CheckResult.wrong("Your notification should not mention Jane Spark");
+            }
+
+            output = expect(main.execute("notify")).toContain(1).lines();
+            if (output.stream()
+                    .map(String::toLowerCase)
+                    .allMatch(str -> anyMissingKeywords(str, "total", "0", "notified"))) {
+                return CheckResult.wrong("Expected output was \"Total 0 students have been notified\", " +
+                        "but your output was: " + String.join("\n", output));
+            }
+
+            return CheckResult.correct();
+        }
+
+        private boolean anyMissingKeywords(String output, String... keywords) {
+            List<String> tokens = Arrays.asList(
+                    output.trim().toLowerCase().split("\\W+")
+            );
+
+            return !tokens.containsAll(Arrays.stream(keywords)
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toList()));
+        }
+
+        private boolean incorrectString(String output, String model) {
+            String normalizedOutput = output.replaceAll("\\W+", "").toLowerCase();
+            String normalizedModel = model.replaceAll("\\W+", "").toLowerCase();
+
+            return !normalizedOutput.contains(normalizedModel);
+        }
+
+        private String[] getBlankInput() {
+            return new String[]{"", "  ", "\t", " \t"};
+        }
+
+        private String[] getUnknownCommands() {
+            return new String[]{"abc", "quit", "  brexit ", "exi  t", "?", "break",
+                    "-exit", "Ctrl+C", "exit please", ":q", "java", "spring", "dsa", "databases"};
+        }
+
+        private String[] getCorrectCredentials() {
+            return new String[]{"John Smith jsmith@hotmail.com", "Anny Doolittle anny.md@mail.edu",
+                    "Jean-Claude O'Connor jcda123@google.net", "Mary Emelianenko 125367at@zzz90.z9",
+                    "Al Owen u15da125@a1s2f4f7.a1c2c5s4", "Robert Jemison Van de Graaff robertvdgraaff@mit.edu",
+                    "Ed Eden a1@a1.a1", "na'me s-u ii@ii.ii", "n'a me su aa-b'b ab@ab.ab", "nA me 1@1.1"};
+        }
+
+        private String[][] getIncorrectCredentials() {
+            return new String[][]{
+                    {"", "Incorrect credentials"}, {" \t", "Incorrect credentials."},
+                    {"name surname", "Incorrect credentials."},
+                    {"n surname email@email.xyz", "Incorrect first name."},
+                    {"'name surname email@email.xyz", "Incorrect first name."},
+                    {"-name surname email@email.xyz", "Incorrect first name."},
+                    {"name- surname email@email.xyz", "Incorrect first name."},
+                    {"name' surname email@email.xyz", "Incorrect first name."},
+                    {"nam-'e surname email@email.xyz", "Incorrect first name."},
+                    {"na'-me surname email@email.xyz", "Incorrect first name."},
+                    {"na--me surname email@email.xyz", "Incorrect first name."},
+                    {"na''me surname email@email.xyz", "Incorrect first name."},
+                    {"námé surname email@email.xyz", "Incorrect first name."},
+                    {"name s email@email.xyz", "Incorrect last name."},
+                    {"name -surname email@email.xyz", "Incorrect last name."},
+                    {"name 'surname email@email.xyz", "Incorrect last name."},
+                    {"name surnam''e email@email.xyz", "Incorrect last name."},
+                    {"name surn--ame email@email.xyz", "Incorrect last name."},
+                    {"name s'-urname email@email.xyz", "Incorrect last name."},
+                    {"name su-'rname email@email.xyz", "Incorrect last name."},
+                    {"name surname- email@email.xyz", "Incorrect last name."},
+                    {"name surname' email@email.xyz", "Incorrect last name."},
+                    {"name surnámé email@email.xyz", "Incorrect last name."},
+                    {"name surname emailemail.xyz", "Incorrect email."},
+                    {"name surname email@emailxyz", "Incorrect email."},
+                    {"name surname email@e@mail.xyz", "Incorrect email."},
+            };
+        }
+
+        private String[] getIncorrectPoints() {
+            return new String[]{"", "-1 1 1 1", "1 1 2 A", "1 1 1", "1 1 1 1 1"};
+        }
+
+        private String[] getCorrectPoints(int n) {
+            return Stream.generate(String::new)
+                    .limit(n)
+                    .map(it -> String.format("%d %d %d %d", nextPoint(), nextPoint(), nextPoint(), nextPoint()))
+                    .toArray(String[]::new);
+        }
+
+        private int nextPoint() {
+            return rnd.nextInt(10) + 1;
+        }
+
+        private List<String> parseIds(List<String> lines) {
+            try {
+                return lines.stream()
+                        .skip(1)
+                        .map(String::trim)
+                        .collect(Collectors.toList());
+            } catch (Exception e) {
+                throw new WrongAnswer("Error occurred while parsing your output " + e.getMessage());
+            }
+        }
+
+        private List<String> generateNames(int n) {
+            List<String> names = List.of("Shoshana Utica", "Marisa Firman", "Gwenette Anagnos", "Charlena Girardo",
+                    "Alexina Belcher", "Karee Antoinetta", "Dolley Panther", "Elysha Quinlan", "Trixie Winer",
+                    "Ricki Trovillion", "Amye Uriisa", "Hedwig Wally", "Gwenette Kironde", "Jermaine Naaman",
+                    "Olga Rosanne", "Annecorinne Ause", "Aurie Dorisa", "Van Fawnia", "Carmella Campman",
+                    "Francesca Francis", "Elwira Florrie", "Nonna Miko", "Natka Herculie", "Roxi Hett", "Brandise Hardan",
+                    "Toby Bleier", "Dalia Gleeson", "Emelia Annnora", "Beatrisa Jegar", "Barbara-Anne Chicky",
+                    "Ann Agnella", "Lebbie Alabaster", "Leola Whelan", "Starlin Griz", "Anjanette Uis", "Tasha Chem");
+
+            List<String> selectedNames = new ArrayList<>(names);
+            Collections.shuffle(selectedNames);
+            return selectedNames.stream().limit(n).collect(Collectors.toList());
+        }
+
+        private List<String> generateEmails(int n) {
+            return IntStream.rangeClosed(1, n).mapToObj(it -> "address" + it + "@mail.com").collect(Collectors.toList());
+        }
+
+        private List<String> getRandomCredentials(int n) {
+            List<String> names = generateNames(n);
+            List<String> emails = generateEmails(n);
+            return IntStream.range(0, n)
+                    .mapToObj(it -> String.format("%s %s", names.get(it), emails.get(it)))
+                    .collect(Collectors.toList());
+        }
+    }
+  learner_created: false
+- name: src/tracker/statistics/CourseGroupSearchContext.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import java.util.Collections;
+    import java.util.List;
+    import java.util.Map;
+    import java.util.Objects;
+    import java.util.stream.Collectors;
+
+    public class CourseGroupSearchContext implements FindStrategy {
+
+        private Map<String, Long> map;
+
+        public CourseGroupSearchContext setMap(Map<String, Long> map) {
+            this.map = map;
+            return this;
+        }
+
+        @Override
+        public List<String> findMax() {
+            return map.entrySet()
+                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.max(map.values())))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+        }
+
+        @Override
+        public List<String> findMin() {
+            return map.entrySet()
+                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.min(map.values())))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+        }
+    }
+  learner_created: true
+- name: src/tracker/model/Course.java
+  visible: true
+  text: |
+    package tracker.model;
+
+    import tracker.utils.TrackerHelperFunction;
+
+    import java.util.Objects;
+
+    public class Course {
+
+        private final String name;
+        private Long points;
+        private final Long maxPoints;
+
+        public Course(String name) {
+            this.name = name;
+            this.maxPoints = TrackerHelperFunction.getMaxPoints(name);
+        }
+
+        public Course(String name, long points) {
+            this(name);
+            this.points = points;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Long getPoints() {
+            return points;
+        }
+
+        public void updatePoints(long points) {
+            this.points += points;
+        }
+
+        public boolean isEnrolled() {
+            return points > 0;
+        }
+
+        public Long getMaxPoints() {
+            return maxPoints;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Course)) return false;
+            Course course = (Course) o;
+            return Objects.equals(getName(), course.getName()) && Objects.equals(getPoints(), course.getPoints()) &&
+                    Objects.equals(getMaxPoints(), course.getMaxPoints());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getName(), getPoints(), getMaxPoints());
+        }
+
+        @Override
+        public String toString() {
+            return "Course{" +
+                    "name='" + name + '\'' +
+                    ", points=" + points +
+                    '}';
+        }
+    }
+  learner_created: true
+- name: src/tracker/Tracker.java
+  visible: true
+  text: |
+    package tracker;
+
+    import tracker.model.Assignment;
+    import tracker.model.Course;
+    import tracker.model.Student;
+    import tracker.builder.StudentBuilder;
+    import tracker.statistics.Statistic;
+    import tracker.utils.StudentIdGenerator;
+    import tracker.utils.Validator;
+
+    import java.util.*;
+    import java.util.stream.Collectors;
+    import java.util.stream.IntStream;
+
+    import static tracker.utils.TrackerHelperFunction.*;
+
+    public class Tracker {
+
+        private final Map<Long, Student> studentMap;
+        private final StudentIdGenerator idGenerator;
+        private final Map<String, Long> submissions;
+        private final Statistic statistic;
+        private final List<Assignment> assignments;
+
+        {
+            idGenerator = StudentIdGenerator.getInstance();
+        }
+
+        public Tracker(Map<Long, Student> studentMap,
+                       Map<String, Long> submissions,
+                       List<Assignment> assignments,
+                       Statistic statistic) {
+            this.studentMap = studentMap;
+            this.submissions = submissions;
+            this.assignments = assignments;
+            this.statistic = statistic;
+        }
+
+        public void start() {
+            System.out.println(PROGRAM_TITLE);
+            Scanner scanner = new Scanner(System.in);
+            boolean exit = false;
+            while (!exit) {
+                String input = scanner.nextLine().trim();
+
+                if (input.isEmpty()) {
+                    System.out.println(NO_INPUT);
+                } else {
+                    switch (input) {
+                        case EXIT_CMD:
+                            System.out.println(OUTPUT_MSG_ON_EXIT);
+                            exit = true;
+                            break;
+                        case STUDENT_LIST_CMD:
+                            showOverview();
+                            break;
+                        case ADD_STUDENTS_CMD:
+                            addStudents();
+                            break;
+                        case ADD_POINTS_CMD:
+                            addPoints();
+                            break;
+                        case FIND_STUDENT_CMD:
+                            findStudent();
+                            break;
+                        case STATISTICS_CMD:
+                            showStatistics();
+                            break;
+                        case BACK_CMD:
+                            System.out.println(ENTER_EXIT_CMD);
+                            break;
+                        default:
+                            System.out.println(ERROR_UNKNOWN_COMMAND);
+
+                    }
+                }
+            }
+        }
+
+        private void showStatistics() {
+            statistic.setStudentMap(studentMap)
+                    .setCourseSubmission(submissions)
+                    .setAssignments(assignments);
+            boolean showStat = true;
+            System.out.println(STATISTIC_OVERVIEW_CMD);
+            STATISTICS_ROWS_NAMES.forEach(s -> System.out.printf("%s: %s\n", s, statistic.findCourseByCategory(s)));
+            while (showStat) {
+                String input = new Scanner(System.in).nextLine();
+                if (BACK_CMD.equals(input)) {
+                    showStat = false;
+                } else if (BASE_COURSES.stream().noneMatch(s -> s.equalsIgnoreCase(input))) {
+                    System.out.println(UNKNOWN_COURSE_MSG);
+                } else {
+                    String courseName = "dsa".equals(input) ? input.toUpperCase() : input.substring(0, 1).toUpperCase() + input.substring(1);
+                    statistic.showCourseDetails(courseName);
+                }
+            }
+        }
+
+        private void findStudent() {
+            System.out.println(ENTER_STUDENT_ID_CMD);
+            boolean goBack = false;
+            while (!goBack) {
+
+                String userInput = new Scanner(System.in).nextLine();
+
+                if (!userInput.matches(POINT_FORMAT_REGEX)) {
+                    goBack = true;
+                } else {
+                    long id = Long.parseLong(userInput);
+                    if (isStudentNotFound(id)) {
+                        System.out.printf(STUDENT_WITH_ID_NOT_FOUND_MSG, id);
+                    } else {
+                        System.out.println(stringifyProgressData(studentMap.get(id)));
+                    }
+                }
+
+            }
+        }
+
+        private void addPoints() {
+            boolean isBackEntered = false;
+            System.out.println(ENTER_STUDENT_COURSES_INFORMATION_CMD);
+            while (!isBackEntered) {
+                List<String> progressData = List.of(new Scanner(System.in).nextLine().split("\\s"));
+                final String studentId = progressData.get(0);
+
+                if (BACK_CMD.equals(studentId)) {
+                    isBackEntered = true;
+                } else if (!Validator.isValidPointFormat(studentId)) {
+                        System.out.printf(STUDENT_WITH_ID_NOT_FOUND_MSG, studentId);
+                } else {
+                    List<Long> data = progressData.stream()
+                            .filter(Validator::isValidPointFormat)
+                            .map(Long::valueOf)
+                            .collect(Collectors.toList());
+                    boolean succeed = updateStudentCoursePoints(data);
+                    if (succeed) {
+                        System.out.println(PROGRESS_DATA_UPDATE_SUCCEED_MSG);
+                    }
+                }
+            }
+        }
+
+        public boolean updateStudentCoursePoints(List<Long> progressData) {
+
+            if (!Validator.isValid(progressData)) {
+                System.out.println(INCORRECT_POINTS_FORMAT);
+            } else {
+                long id = progressData.get(0);
+                if (isStudentNotFound(id)) {
+                    System.out.printf(STUDENT_WITH_ID_NOT_FOUND_MSG, id);
+                } else {
+                    Student student = studentMap.get(id);
+                    IntStream.range(1, PROGRESS_DATA_SIZE)
+                            .forEach(i -> {
+                                String name = BASE_COURSES.get(i - 1);
+                                Long points = progressData.get(i);
+                                student.updateCourse(name, points);
+                                if (points > 0) {
+                                    long count = submissions.get(name) + 1;
+                                    submissions.put(name, count);
+                                    Assignment assignment = new Assignment(id, new Course(name, points));
+                                    assignments.add(assignment);
+                                }
+                            });
+
+                    studentMap.replace(id, student);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public boolean isStudentNotFound(long id) {
+            return studentMap.keySet().stream().noneMatch(studentId -> studentId == id);
+        }
+
+        private void showOverview() {
+            if (studentMap.isEmpty()) {
+                System.out.println(STUDENT_LIST_EMPTY_MSG);
+            } else {
+                System.out.println(STUDENT_LIST_OVERVIEW_HEADER);
+                studentMap.keySet().forEach(System.out::println);
+            }
+        }
+
+        private void addStudents() {
+
+            System.out.println(ENTER_CREDENTIALS_CMD);
+            boolean goBack = false;
+
+            while (!goBack) {
+                List<String> credentials = List.of(new Scanner(System.in).nextLine().split("\\s"));
+                int size = credentials.size();
+
+                if (credentials.contains(BACK_CMD)) {
+                    System.out.printf(TOTAL_STUDENT_REPORT, studentMap.size());
+                    goBack = true;
+                } else if (size <= 2) {
+                    System.out.println(INCORRECT_CREDENTIALS);
+                } else {
+
+                    String firstname = credentials.get(0).trim();
+
+                    StringBuilder lastname = new StringBuilder();
+
+                    IntStream.range(1, size - 1)
+                            .forEach(i -> lastname.append(credentials.get(i)).append(" "));
+
+                    String email = credentials.get(size - 1).trim();
+
+                    long studentId = idGenerator.getNextId();
+
+                    Student student = StudentBuilder.init()
+                            .withId(studentId)
+                            .withCredentials(firstname, lastname.toString().trim(), email)
+                            .withCourses()
+                            .build();
+
+                    if (validateCredentials(student)) {
+                        System.out.println(STUDENT_ADD_SUCCEED_MSG);
+                    }
+                }
+            }
+        }
+
+        public boolean validateCredentials(Student student) {
+
+            if (student.isValid()) {
+                if (isEmailTaken(student.getEmail())) {
+                    System.out.println(NOT_AVAILABLE_EMAIL);
+                } else {
+                    studentMap.put(student.getId(), student);
+                    return true;
+                }
+
+            } else {
+                if (!student.hasValidFirstName()) {
+                    System.out.println(INCORRECT_FIRSTNAME);
+                } else if (!student.hasValidLastName()) {
+                    System.out.println(INCORRECT_LASTNAME);
+                } else {
+                    System.out.println(INCORRECT_EMAIL);
+                }
+            }
+
+            return false;
+        }
+
+        public boolean isEmailTaken(String email) {
+            return studentMap.entrySet()
+                    .stream()
+                    .anyMatch(studentEntry -> email.equals(studentEntry.getValue().getEmail()));
+        }
+
+        public Map<Long, Student> getStudentMap() {
+            return studentMap;
+        }
+    }
+  learner_created: true
+- name: src/tracker/builder/TrackerAnalyserBuilder.java
+  visible: true
+  text: |
+    package tracker.builder;
+
+    import tracker.model.Assignment;
+    import tracker.model.Student;
+    import tracker.statistics.CourseGroupSearchContext;
+    import tracker.statistics.CourseStrengthSearchContext;
+    import tracker.statistics.Finder;
+    import tracker.statistics.TrackerAnalyser;
+
+    import java.util.List;
+    import java.util.Map;
+
+    public class TrackerAnalyserBuilder {
+
+        private Map<Long, Student> studentMap;
+        private Map<String, Long> courseSubmissions;
+        private List<Assignment> assignments;
+        private Finder finder;
+        private CourseGroupSearchContext searchContext;
+        private CourseStrengthSearchContext strengthSearchContext;
+
+        private TrackerAnalyserBuilder() {
+        }
+
+        public static TrackerAnalyserBuilder init() {
+            return new TrackerAnalyserBuilder();
+        }
+
+        public TrackerAnalyserBuilder withStudentMap(Map<Long, Student> studentMap) {
+            this.studentMap = studentMap;
+            return this;
+        }
+
+        public TrackerAnalyserBuilder withCourseSubmissions(Map<String, Long> courseSubmissions) {
+            this.courseSubmissions = courseSubmissions;
+            return this;
+        }
+
+        public TrackerAnalyserBuilder withAssignmentList(List<Assignment> assignmentList) {
+            this.assignments = assignmentList;
+            return this;
+        }
+
+        public TrackerAnalyserBuilder withFinder() {
+            this.finder = new Finder();
+            return this;
+        }
+
+        public TrackerAnalyserBuilder withSearchContext() {
+            this.searchContext = new CourseGroupSearchContext();
+            return this;
+        }
+
+        public TrackerAnalyserBuilder withStrengthSearchContext() {
+            this.strengthSearchContext = new CourseStrengthSearchContext();
+            return this;
+        }
+
+        public TrackerAnalyser build() {
+            return new TrackerAnalyser(studentMap, courseSubmissions,
+                    assignments, finder, searchContext, strengthSearchContext);
+        }
+    }
+  learner_created: true
+- name: src/tracker/model/Student.java
+  visible: true
+  text: "package tracker.model;\n\nimport tracker.utils.TrackerUtil;\nimport tracker.utils.Validator;\n\
+    \nimport java.math.BigDecimal;\nimport java.math.RoundingMode;\nimport java.util.*;\n\
+    \npublic class Student {\n\n    private Long id;\n    private final String firstname;\n\
+    \    private final String lastname;\n    private final String email;\n    private\
+    \ Map<String, Course> courses;\n\n    public Student(String firstname, String\
+    \ lastname, String email) {\n        this.firstname = firstname;\n        this.lastname\
+    \ = lastname;\n        this.email = email;\n    }\n\n    public Student(Long id,\
+    \ String firstname, String lastname, String email) {\n        this(firstname,\
+    \ lastname, email);\n        this.id = id;\n    }\n\n    public Student(Long id,\
+    \ String firstname, String lastname, String email,\n                   Map<String,\
+    \ Course> courses) {\n       this(id, firstname, lastname, email);\n        this.courses\
+    \ = courses;\n    }\n\n    public Long getId() {\n        return id;\n    }\n\n\
+    \    public String getFirstname() {\n        return firstname;\n    }\n\n    public\
+    \ String getLastname() {\n        return lastname;\n    }\n\n    public String\
+    \ getEmail() {\n        return email;\n    }\n\n    public Map<String, Course>\
+    \ getCourses() {\n        return courses;\n    }\n\n    public boolean hasValidFirstName()\
+    \ {\n        return Validator.isValidName(firstname);\n    }\n    \n    public\
+    \ boolean hasValidLastName() {\n        return Validator.isValidLastname(lastname);\n\
+    \    }\n    \n    public boolean hasValidEmail() {\n        return Validator.isValidEmail(email);\n\
+    \    }\n    \n    public boolean isValid() {\n        return hasValidEmail() &&\
+    \ hasValidFirstName() && hasValidLastName();\n    }\n\n    public boolean isEnrolled(String\
+    \ course) {\n        return courses.get(course).isEnrolled();\n    }\n\n    public\
+    \ Long sumPoints(String courseName) {\n        return courses.get(courseName).getPoints();\n\
+    \    }\n\n    public double progress(String courseName) {\n        final Course\
+    \ course = courses.get(courseName);\n        return new BigDecimal((double) sumPoints(courseName)\
+    \ * TrackerUtil.PERCENT / course.getMaxPoints())\n                .setScale(1,\
+    \ RoundingMode.HALF_UP)\n                .doubleValue();\n    }\n\n    public\
+    \ void updateCourse(String name, long points) {\n\n        if (courses.containsKey(name))\
+    \ {\n            Course course = courses.get(name);\n            course.updatePoints(points);\n\
+    \            courses.replace(name, course);\n        } else {\n            courses.put(name,\
+    \ new Course(name, points));\n        }\n    }\n\n    @Override\n    public boolean\
+    \ equals(Object o) {\n        if (this == o) return true;\n        if (!(o instanceof\
+    \ Student)) return false;\n        Student student = (Student) o;\n        return\
+    \ Objects.equals(getId(), student.getId()) &&\n                Objects.equals(getFirstname(),\
+    \ student.getFirstname()) &&\n                Objects.equals(getLastname(), student.getLastname())\
+    \ &&\n                Objects.equals(getEmail(), student.getEmail()) &&\n    \
+    \            Objects.equals(getCourses(), student.getCourses());\n    }\n\n  \
+    \  @Override\n    public int hashCode() {\n        return Objects.hash(getId(),\
+    \ getFirstname(), getLastname(), getEmail(), getCourses());\n    }\n\n    @Override\n\
+    \    public String toString() {\n        return \"Student{\" +\n             \
+    \   \"id=\" + id +\n                \", firstname='\" + firstname + '\\'' +\n\
+    \                \", lastname='\" + lastname + '\\'' +\n                \", email='\"\
+    \ + email + '\\'' +\n                \", courses=\" + courses +\n            \
+    \    '}';\n    }\n\n}\n"
+  learner_created: true
+- name: src/tracker/utils/TrackerUtil.java
+  visible: true
+  text: |
+    package tracker.utils;
+
+    import java.util.List;
+
+    public class TrackerUtil {
+
+        public static final String ADD_STUDENTS_CMD = "add students";
+        public static final String STUDENT_LIST_CMD = "list";
+        public static final String ADD_POINTS_CMD = "add points";
+        public static final String FIND_STUDENT_CMD = "find";
+        public static final String STATISTICS_CMD = "statistics";
+        public static final String BACK_CMD = "back";
+        public static final String EXIT_CMD = "exit";
+
+        public static final String ENTER_EXIT_CMD = "Enter 'exit' to exit the program.";
+        public static final String ENTER_CREDENTIALS_CMD = "Enter student credentials or 'back' to return:";
+        public static final String ENTER_STUDENT_COURSES_INFORMATION_CMD = "Enter an id and points or 'back' to return";
+        public static final String ENTER_STUDENT_ID_CMD = "Enter an id or 'back' to return";
+        public static final String STATISTIC_OVERVIEW_CMD = "Type the name of a course to see details or 'back' to quit:";
+
+        public static final String PROGRAM_TITLE = "Learning Progress Tracker";
+        public static final String STUDENT_DETAIL_TEXT = "%s points: ";
+        public static final String PROGRESS_DATA_UPDATE_SUCCEED_MSG = "Points updated.";
+        public static final String TOTAL_STUDENT_REPORT = "Total %d students have been added.\n";
+        public static final String STUDENT_ADD_SUCCEED_MSG = "The student has been added.";
+        public static final String STUDENT_LIST_OVERVIEW_HEADER = "Students:";
+        public static final String OUTPUT_MSG_ON_EXIT = "Bye!";
+
+        public static final String STUDENT_WITH_ID_NOT_FOUND_MSG = "No student is found for id=%s.\n";
+        public static final String STUDENT_LIST_EMPTY_MSG = "No students found";
+        public static final String ERROR_UNKNOWN_COMMAND = "Error: unknown command!";
+        public static final String NO_INPUT = "No input.";
+        public static final String INCORRECT_FIRSTNAME = "Incorrect first name.";
+        public static final String INCORRECT_LASTNAME = "Incorrect last name.";
+        public static final String INCORRECT_EMAIL = "Incorrect email.";
+        public static final String INCORRECT_CREDENTIALS = "Incorrect credentials.";
+        public static final String INCORRECT_POINTS_FORMAT = "Incorrect points format.";
+        public static final String NOT_AVAILABLE_EMAIL = "This email is already taken.";
+
+        public static final String NAME_REGEX = "^[A-Za-z]+[-']?[A-Za-z]+";
+        public static final String LASTNAME_REGEX = "[A-Za-z ]+([-' ][A-Za-z ])*[-' ]?[A-Za-z]+";
+        public static final String EMAIL_REGEX = "[\\w.]+@\\w+\\.[a-z\\d]+";
+        public static final String POINT_FORMAT_REGEX = "[\\d{1,9}]+";
+
+        public static final List<String> BASE_COURSES = List.of("Java", "DSA", "Databases", "Spring");
+        public static final List<String> STATISTICS_ROWS_NAMES = List.of("Most popular", "Least popular",
+                "Highest activity", "Lowest activity", "Easiest course", "Hardest course");
+
+        public static final long MIN_ID = 9999L;
+        public static final long MAX_POINTS_JAVA = 600;
+        public static final long MAX_POINTS_DSA = 400;
+        public static final long MAX_POINTS_DATABASES = 480;
+        public static final long MAX_POINTS_SPRING = 550;
+
+        public static final int PROGRESS_DATA_SIZE = 5;
+        public static final String UNKNOWN_COURSE_MSG = "Unknown course.";
+        public static final double PERCENT = 100.0;
+    }
+  learner_created: true
+- name: src/tracker/statistics/Statistic.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import tracker.model.Assignment;
+    import tracker.model.Student;
+
+    import java.util.List;
+    import java.util.Map;
+
+    public interface Statistic {
+
+        List<String> findMostPopularCourses();
+        List<String> findLeastPopularCourse();
+        List<String> findHardestCourse();
+        List<String> findEasiestCourse();
+        List<String> findCourseWithHighestActivity();
+        List<String> findCourseWithLowestActivity();
+        void showCourseDetails(String courseName);
+        Statistic setStudentMap(Map<Long, Student> studentMap);
+        Statistic setCourseSubmission(Map<String, Long> courseSubmission);
+        Statistic setAssignments(List<Assignment> assignments);
+        String findCourseByCategory(String category);
+    }
+  learner_created: true
+- name: src/tracker/utils/Validator.java
+  visible: true
+  text: |
+    package tracker.utils;
+
+    import java.util.List;
+
+    import static tracker.utils.TrackerUtil.*;
+
+    public class Validator {
+
+        public static boolean isValidName(String name) {
+            return name.matches(NAME_REGEX);
+        }
+
+        public static boolean isValidLastname(String lastname) {
+            return lastname.matches(LASTNAME_REGEX);
+        }
+
+        public static boolean isValidEmail(String email) {
+            return email.matches(EMAIL_REGEX);
+        }
+
+        public static boolean isValidPointFormat(String point) {
+            return point.matches(POINT_FORMAT_REGEX);
+        }
+
+        public static boolean isValid(List<Long> progressData) {
+            return progressData.size() == PROGRESS_DATA_SIZE && progressData.stream().allMatch(number -> number >= 0L);
+        }
+    }
+  learner_created: true
+- name: src/tracker/statistics/Finder.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import java.util.List;
+
+    public class Finder {
+
+        private FindStrategy strategy;
+
+        public Finder setStrategy(FindStrategy strategy) {
+            this.strategy = strategy;
+            return this;
+        }
+
+        public List<String> findMax() {
+            return strategy.findMax();
+        }
+
+        public List<String> findMin() {
+            return strategy.findMin();
+        }
+    }
+  learner_created: true
+- name: src/tracker/builder/StudentBuilder.java
+  visible: true
+  text: |
+    package tracker.builder;
+
+    import tracker.model.Course;
+    import tracker.model.Student;
+
+    import java.util.*;
+    import java.util.concurrent.ConcurrentHashMap;
+
+    public class StudentBuilder {
+
+        private Long id;
+        private String firstname;
+        private String lastname;
+        private String email;
+        private Map<String, Course> courses;
+
+        private StudentBuilder() {
+        }
+
+        public static StudentBuilder init() {
+            return new StudentBuilder();
+        }
+
+        public StudentBuilder withId(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public StudentBuilder withCredentials(String firstname, String lastname, String email) {
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.email = email;
+            return this;
+        }
+
+        public StudentBuilder withCourses() {
+            this.courses = new ConcurrentHashMap<>();
+            return this;
+        }
+
+        public Student build() {
+            return new Student(id, firstname, lastname, email, courses);
+        }
+    }
+  learner_created: true
+- name: src/tracker/statistics/CourseStrengthSearchContext.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import java.util.Collections;
+    import java.util.List;
+    import java.util.Map;
+    import java.util.Objects;
+    import java.util.stream.Collectors;
+
+    public class CourseStrengthSearchContext implements FindStrategy {
+
+        private Map<String, Double> map;
+
+        public CourseStrengthSearchContext setMap(Map<String, Double> map) {
+            this.map = map;
+            return this;
+        }
+
+        @Override
+        public List<String> findMax() {
+            return map.entrySet()
+                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.max(map.values())))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+        }
+
+        @Override
+        public List<String> findMin() {
+            return map.entrySet()
+                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.min(map.values())))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+        }
+    }
+  learner_created: true
+- name: src/tracker/utils/TrackerHelperFunction.java
+  visible: true
+  text: |
+    package tracker.utils;
+
+    import tracker.builder.StudentBuilder;
+    import tracker.builder.TrackerAnalyserBuilder;
+    import tracker.model.Assignment;
+    import tracker.model.Course;
+    import tracker.model.Student;
+    import tracker.statistics.Statistic;
+
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.Map;
+    import java.util.concurrent.ConcurrentHashMap;
+    import java.util.stream.Collectors;
+    import java.util.stream.IntStream;
+
+    public class TrackerHelperFunction extends TrackerUtil {
+
+        public static String stringifyProgressData(Student student) {
+            StringBuilder progressData = new StringBuilder(String.format(TrackerUtil.STUDENT_DETAIL_TEXT, student.getId()));
+            student.getCourses().forEach((s, course) -> {
+                String format = BASE_COURSES.get(3).equals(s) ? "%s=%d" : "%s=%d; ";
+                progressData.append(String.format(format, s, course.getPoints()));
+            });
+            return progressData.toString();
+        }
+
+        public static Long getMaxPoints(String course) {
+            long maxPoint = 0;
+            switch (course) {
+                case "Java":
+                    maxPoint = TrackerUtil.MAX_POINTS_JAVA;
+                    break;
+                case "DSA":
+                    maxPoint = TrackerUtil.MAX_POINTS_DSA;
+                    break;
+                case "Databases":
+                    maxPoint = TrackerUtil.MAX_POINTS_DATABASES;
+                    break;
+                case "Spring":
+                    maxPoint = TrackerUtil.MAX_POINTS_SPRING;
+                    break;
+            }
+            return maxPoint;
+        }
+
+        public static Map<String, Long> initialSubmission() {
+            return BASE_COURSES.stream()
+                    .collect(Collectors.toMap(s -> s, s -> 0L, (a, b) -> b));
+        }
+
+        public static Map<String, Long> findEnrolledStudentPerCourse(Map<Long, Student> studentMap) {
+            Map<String, Long> enrolledStudentPerCourse = new ConcurrentHashMap<>();
+
+            if (studentMap.isEmpty()) {
+                return Map.of();
+            }
+
+            BASE_COURSES.forEach(course -> {
+                long enrollment = studentMap.values()
+                        .stream()
+                        .filter(student -> student.isEnrolled(course))
+                        .count();
+
+                enrolledStudentPerCourse.put(course, enrollment);
+            });
+
+            return enrolledStudentPerCourse;
+        }
+
+        public static Map<String, Double> findAverageGradPerAssignmentEachCourse(List<Assignment> assignments) {
+
+            Map<String, Double> averageGradMap = new ConcurrentHashMap<>();
+            BASE_COURSES.forEach(s -> {
+                double avgGrad = assignments.stream()
+                        .map(Assignment::getCourse)
+                        .filter(course -> s.equals(course.getName()))
+                        .map(Course::getPoints)
+                        .collect(Collectors.averagingDouble(Long::doubleValue));
+
+                if (avgGrad > 0) {
+                    averageGradMap.put(s, avgGrad);
+                }
+            });
+
+            return averageGradMap;
+        }
+
+        /**
+         * This method is only for test purpose
+         *
+         * @param submissionData Test data
+         * @return Statistic class object
+         */
+        public static Statistic initStatistic(List<List<Long>> submissionData) {
+            Map<Long, Student> studentMap = new ConcurrentHashMap<>();
+            Map<String, Long> initialSubmission = initialSubmission();
+            List<Assignment> assignments = new ArrayList<>();
+
+            submissionData.forEach(list -> {
+                long id = list.get(0);
+                Student student;
+                if (studentMap.containsKey(id)) {
+                    student = studentMap.get(id);
+                } else {
+                    student = StudentBuilder.init()
+                            .withId(id)
+                            .withCourses()
+                            .build();
+                }
+
+                IntStream.range(1, list.size())
+                        .forEach(i -> {
+                            String name = BASE_COURSES.get(i - 1);
+                            Long points = list.get(i);
+                            student.updateCourse(name, points);
+                            if (points > 0) {
+                                long count = initialSubmission.get(name) + 1;
+                                initialSubmission.put(name, count);
+                                Assignment assignment = new Assignment(id, new Course(name, points));
+                                assignments.add(assignment);
+                            }
+                        });
+
+                studentMap.put(id, student);
+            });
+
+            return TrackerAnalyserBuilder.init()
+                    .withStudentMap(studentMap)
+                    .withCourseSubmissions(initialSubmission)
+                    .withAssignmentList(assignments)
+                    .withFinder()
+                    .withSearchContext()
+                    .withStrengthSearchContext()
+                    .build();
+        }
+    }
+  learner_created: true
+- name: src/tracker/builder/TrackerBuilder.java
+  visible: true
+  text: |-
+    package tracker.builder;
+
+    import tracker.Tracker;
+    import tracker.model.Assignment;
+    import tracker.model.Student;
+    import tracker.statistics.Statistic;
+    import tracker.utils.TrackerHelperFunction;
+
+    import java.util.ArrayList;
+    import java.util.LinkedHashMap;
+    import java.util.List;
+    import java.util.Map;
+
+    public class TrackerBuilder {
+
+        private Map<Long, Student> studentMap;
+        private Map<String, Long> submits;
+        private Statistic statistic;
+        private List<Assignment> assignmentList;
+
+        private TrackerBuilder() {
+        }
+
+        public static TrackerBuilder init() {
+            return new TrackerBuilder();
+        }
+
+        public TrackerBuilder withStudentTable() {
+            this.studentMap = new LinkedHashMap<>();
+            return this;
+        }
+
+        public TrackerBuilder withAssignmentList() {
+            this.assignmentList = new ArrayList<>();
+            return this;
+        }
+
+        public TrackerBuilder withInitialSubmit() {
+            this.submits = TrackerHelperFunction.initialSubmission();
+            return this;
+        }
+
+        public TrackerBuilder withStatistic() {
+            this.statistic = TrackerAnalyserBuilder.init()
+                    .withStudentMap(studentMap)
+                    .withCourseSubmissions(submits)
+                    .withAssignmentList(assignmentList)
+                    .withFinder()
+                    .withSearchContext()
+                    .withStrengthSearchContext()
+                    .build();
+
+            return this;
+        }
+
+        public Tracker build() {
+            return new Tracker(studentMap, submits, assignmentList, statistic);
+        }
+    }
+  learner_created: true
+- name: src/tracker/statistics/TrackerAnalyser.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import tracker.model.Assignment;
+    import tracker.model.Student;
+
+    import java.util.*;
+    import static tracker.utils.TrackerHelperFunction.*;
+
+    public class TrackerAnalyser implements Statistic {
+
+        private Map<Long, Student> studentMap;
+        private Map<String, Long> courseSubmission;
+        private List<Assignment> assignments;
+
+        private final Finder finder;
+        private final CourseGroupSearchContext searchContext;
+        private final CourseStrengthSearchContext strengthSearchContext;
+
+        public TrackerAnalyser(Map<Long, Student> studentMap,
+                               Map<String, Long> courseSubmission,
+                               List<Assignment> assignments,
+                               Finder finder,
+                               CourseGroupSearchContext searchContext,
+                               CourseStrengthSearchContext courseStrengthSearchContext) {
+            this.studentMap = studentMap;
+            this.courseSubmission = courseSubmission;
+            this.assignments = assignments;
+            this.finder = finder;
+            this.searchContext = searchContext;
+            this.strengthSearchContext = courseStrengthSearchContext;
+        }
+
+        public Statistic setStudentMap(Map<Long, Student> studentMap) {
+            this.studentMap = studentMap;
+            return this;
+        }
+
+        public Statistic setCourseSubmission(Map<String, Long> courseSubmission) {
+            this.courseSubmission = courseSubmission;
+            return this;
+        }
+
+        public Statistic setAssignments(List<Assignment> assignments) {
+            this.assignments = assignments;
+            return this;
+        }
+
+        @Override
+        public String findCourseByCategory(String category) {
+
+            String stringBuilder;
+            List<String> courses;
+
+            switch (category) {
+                case "Most popular":
+                    stringBuilder = stringifyCourseList(findMostPopularCourses());
+                    break;
+                case "Least popular":
+                    courses = findLeastPopularCourse();
+                    courses.removeAll(findMostPopularCourses());
+                    stringBuilder = stringifyCourseList(courses);
+                    break;
+                case "Highest activity":
+                    stringBuilder = stringifyCourseList(findCourseWithHighestActivity());
+                    break;
+                case "Lowest activity":
+                    courses = findCourseWithLowestActivity();
+                    courses.removeAll(findCourseWithHighestActivity());
+                    stringBuilder = stringifyCourseList(courses);
+                    break;
+                case "Easiest course":
+                    stringBuilder = stringifyCourseList(findEasiestCourse());
+                    break;
+                case "Hardest course":
+                    courses = findHardestCourse();
+                    courses.removeAll(findEasiestCourse());
+                    stringBuilder = stringifyCourseList(courses);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + category);
+            }
+
+            return stringBuilder.isEmpty() ? "n/a" : stringBuilder;
+        }
+
+        private String stringifyCourseList(List<String> courses) {
+            StringBuilder sb;
+            sb = new StringBuilder();
+            for (int i = 0; i < courses.size(); i++) {
+                sb.append(courses.get(i));
+                if (i < courses.size() - 1) {
+                    sb.append(", ");
+                }
+            }
+
+            return sb.toString();
+        }
+
+
+        @Override
+        public List<String> findMostPopularCourses() {
+            return finder.setStrategy(searchContext.setMap(findEnrolledStudentPerCourse(studentMap)))
+                    .findMax();
+        }
+
+        @Override
+        public List<String> findLeastPopularCourse() {
+            return finder.setStrategy(searchContext.setMap(findEnrolledStudentPerCourse(studentMap)))
+                    .findMin();
+        }
+
+        @Override
+        public List<String> findHardestCourse() {
+            return finder.setStrategy(strengthSearchContext
+                    .setMap(findAverageGradPerAssignmentEachCourse(assignments)))
+                    .findMin();
+        }
+
+        @Override
+        public List<String> findEasiestCourse() {
+            return finder.setStrategy(strengthSearchContext
+                    .setMap(findAverageGradPerAssignmentEachCourse(assignments)))
+                    .findMax();
+        }
+
+        @Override
+        public List<String> findCourseWithHighestActivity() {
+            if (courseSubmission.values().stream().allMatch((aLong -> aLong == 0))) {
+                return new ArrayList<>();
+            }
+            return finder.setStrategy(searchContext
+                    .setMap(courseSubmission))
+                    .findMax();
+        }
+
+        @Override
+        public List<String> findCourseWithLowestActivity() {
+            if (courseSubmission.values().stream().allMatch((aLong -> aLong == 0))) {
+                return new ArrayList<>();
+            }
+            return finder.setStrategy(searchContext
+                    .setMap(courseSubmission))
+                    .findMin();
+        }
+
+        @Override
+        public void showCourseDetails(String courseName) {
+            System.out.println(courseName);
+            System.out.println("id\tpoints\tcompleted");
+            StringBuilder stringBuilder = new StringBuilder();
+
+            studentMap.values()
+                    .stream()
+                    .filter(student -> student.isEnrolled(courseName))
+                    .sorted(Comparator.comparing(student -> student.sumPoints(courseName), Comparator.reverseOrder()))
+                    .forEachOrdered(student -> stringBuilder.append(student.getId()).append("\t")
+                            .append(student.sumPoints(courseName)).append("\t")
+                            .append(student.progress(courseName)).append("%\n"));
+
+            if (!stringBuilder.toString().isEmpty()) {
+                System.out.print(stringBuilder);
+            }
+        }
+    }
+  learner_created: true
+- name: src/tracker/model/Assignment.java
+  visible: true
+  text: |
+    package tracker.model;
+
+    import java.util.Objects;
+
+    public class Assignment {
+
+        private final Long studentId;
+        private final Course course;
+
+        public Assignment(Long studentId, Course course) {
+            this.studentId = studentId;
+            this.course = course;
+        }
+
+        public Long getStudentId() {
+            return studentId;
+        }
+
+        public Course getCourse() {
+            return course;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Assignment)) return false;
+            Assignment that = (Assignment) o;
+            return Objects.equals(getStudentId(), that.getStudentId()) && Objects.equals(getCourse(), that.getCourse());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getStudentId(), getCourse());
+        }
+
+        @Override
+        public String toString() {
+            return "Assignment{" +
+                    "studentId=" + studentId +
+                    ", course=" + course +
+                    '}';
+        }
+    }
+  learner_created: true
+- name: src/tracker/utils/CourseOption.java
+  visible: true
+  text: |
+    package tracker.utils;
+
+    public enum CourseOption {
+
+        JAVA (600),
+        DSA (400),
+        DATABASES (480),
+        SPRING (550);
+
+        CourseOption(final long maxPoints) {
+            this.maxPoints = maxPoints;
+        }
+
+        private final long maxPoints;
+
+        public long getMaxPoints() {
+            return maxPoints;
+        }
+    }
+  learner_created: true
+- name: src/tracker/utils/StudentIdGenerator.java
+  visible: true
+  text: |
+    package tracker.utils;
+
+    public class StudentIdGenerator {
+
+        private static final StudentIdGenerator instance = new StudentIdGenerator();
+
+        private Long initialId = TrackerUtil.MIN_ID;
+
+        private StudentIdGenerator() {
+        }
+
+        public static StudentIdGenerator getInstance() {
+            return instance == null ? new StudentIdGenerator() : instance;
+        }
+
+        public Long getNextId() {
+            incrementId();
+            return initialId;
+        }
+
+        private void incrementId() {
+            initialId++;
+        }
+    }
+  learner_created: true
+- name: src/tracker/statistics/FindStrategy.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import java.util.List;
+
+    public interface FindStrategy {
+
+        List<String> findMax();
+        List<String> findMin();
+    }
+  learner_created: true
+- name: test/tracker/TrackerTest.java
+  visible: true
+  text: |-
+    package tracker;
+
+    import org.junit.jupiter.api.DisplayName;
+    import org.junit.jupiter.api.Test;
+    import tracker.utils.Validator;
+
+    import java.util.function.Predicate;
+
+    import static org.junit.jupiter.api.Assertions.*;
+
+
+    class TrackerTest {
+
+
+        private final Predicate<String> isValidName = Validator::isValidName;
+        private final Predicate<String> isValidMail = Validator::isValidEmail;
+
+        @Test
+        @DisplayName("Should return true when first name contains hyphens")
+        void testFirstnameWithHyphens() {
+            String name = "Jean-Claude";
+            assertTrue(isValidName.test(name));
+        }
+
+        @Test
+        @DisplayName("Should return true when first name contains apostrophe")
+        void testFirstnameWithApostrophe() {
+            String name = "O'Neill";
+            assertTrue(isValidName.test(name));
+        }
+
+        @Test
+        @DisplayName("Should return true when last name contains space")
+        void testLastnameContainsSpace() {
+            String name = "van Helsing";
+            assertTrue(Validator.isValidLastname(name));
+        }
+
+        @Test
+        @DisplayName("Should return false when first name and last name contain invalid characters")
+        void testFirstnameWithInvalidCharacter() {
+            String name = "Stanisław";
+            assertFalse(isValidName.test(name));
+        }
+
+        @Test
+        @DisplayName("Should return false when first name is shorted")
+        void testFirstnameShorted() {
+            String name = "J.";
+            assertFalse(isValidName.test(name));
+        }
+
+        @Test
+        @DisplayName("Should return false when last name is shorted")
+        void testLastnameShorted() {
+            String name = "D.";
+            assertFalse(isValidName.test(name));
+        }
+
+        @Test
+        @DisplayName("Should return false when first name is given with only one character")
+        void testFirstnameGivenWithOneCharacter() {
+            String name = "D";
+            assertFalse(isValidName.test(name));
+        }
+
+        @Test
+        @DisplayName("Should return false when first name and last name contain invalid characters")
+        void testLastnameWithInvalidCharacter() {
+            String name = "Oğuz";
+            assertFalse(isValidName.test(name));
+        }
+
+        @Test
+        @DisplayName("Should return false when first name contain chinese characters")
+        void testLastnameWithChineseCharacter() {
+            String name = "陳";
+            assertFalse(isValidName.test(name));
+        }
+
+        @Test
+        @DisplayName("Should return true when email is valid")
+        void testEmailWithFirstnameShortedValid() {
+            String email = "jdoe@mail.net";
+            assertTrue(isValidMail.test(email));
+        }
+
+        @Test
+        @DisplayName("Should return true when email is valid")
+        void testEmailWithFullNameValid() {
+            String email = "jane.doe@yahoo.com";
+            assertTrue(isValidMail.test(email));
+        }
+
+        @Test
+        @DisplayName("Should return false when email is incorrect")
+        void testEmailNotCorrectValid() {
+            String email = "email";
+            assertFalse(isValidMail.test(email));
+        }
+    }
+  learner_created: false
+- name: src/tracker/notification/NotificationService.java
+  visible: true
+  learner_created: true
+- name: src/tracker/notification/NotificationServiceImpl.java
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/14400#comment
+status: Solved
+feedback:
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
+    Academy</a> to continue learning.
+  time: Fri, 11 Feb 2022 07:08:04 UTC
+record: -1

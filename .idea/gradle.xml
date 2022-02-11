@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="delegatedBuild" value="false" />
+        <option name="testRunner" value="GRADLE" />
+        <option name="distributionType" value="WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/Learning Progress Tracker/task" />
+            <option value="$PROJECT_DIR$/Learning Progress Tracker/task/build/classes/java" />
+            <option value="$PROJECT_DIR$/Learning Progress Tracker/task/build/generated/sources/annotationProcessor/java" />
+            <option value="$PROJECT_DIR$/Learning Progress Tracker/task/build/generated/sources/headers/java" />
+            <option value="$PROJECT_DIR$/Learning Progress Tracker/task/build/reports/tests" />
+            <option value="$PROJECT_DIR$/Learning Progress Tracker/task/build/test-results" />
+            <option value="$PROJECT_DIR$/Learning Progress Tracker/task/build/tmp" />
+            <option value="$PROJECT_DIR$/Topics/Bean validation/Add two annotations" />
+            <option value="$PROJECT_DIR$/Topics/Bean validation/Add two annotations/build/classes/java" />
+            <option value="$PROJECT_DIR$/Topics/Bean validation/Add two annotations/build/generated/sources/annotationProcessor/java" />
+            <option value="$PROJECT_DIR$/Topics/Bean validation/Add two annotations/build/generated/sources/headers/java" />
+            <option value="$PROJECT_DIR$/Topics/Bean validation/Add two annotations/build/reports/tests" />
+            <option value="$PROJECT_DIR$/Topics/Bean validation/Add two annotations/build/test-results" />
+            <option value="$PROJECT_DIR$/Topics/Bean validation/Add two annotations/build/tmp" />
+            <option value="$PROJECT_DIR$/Topics/Bean validation/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Choosing the right collection/Even numbers go first" />
+            <option value="$PROJECT_DIR$/Topics/Choosing the right collection/Multiset" />
+            <option value="$PROJECT_DIR$/Topics/Choosing the right collection/Removing duplicates and sorting" />
+            <option value="$PROJECT_DIR$/Topics/Choosing the right collection/Substitution cipher" />
+            <option value="$PROJECT_DIR$/Topics/Choosing the right collection/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Choosing the right collection/War and Peace" />
+            <option value="$PROJECT_DIR$/Topics/Conditional statement/The army of units" />
+            <option value="$PROJECT_DIR$/Topics/Conditional statement/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Area of a circle" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Celsius to Fahrenheit" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Difference between two doubles" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Distance" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Evaluate an expression" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Exponential expression" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Find X" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Liquid pressure" />
+            <option value="$PROJECT_DIR$/Topics/Floating-point types/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Functional decomposition/Create a full name" />
+            <option value="$PROJECT_DIR$/Topics/Functional decomposition/Decompose a math function" />
+            <option value="$PROJECT_DIR$/Topics/Functional decomposition/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Iterating over arrays/Does an array contain N?" />
+            <option value="$PROJECT_DIR$/Topics/Iterating over arrays/Right Rotation" />
+            <option value="$PROJECT_DIR$/Topics/Iterating over arrays/The index of the first max in an array" />
+            <option value="$PROJECT_DIR$/Topics/Iterating over arrays/The maximum product of adjacent elements" />
+            <option value="$PROJECT_DIR$/Topics/Iterating over arrays/The minimum value of an array" />
+            <option value="$PROJECT_DIR$/Topics/Iterating over arrays/Theory" />
+            <option value="$PROJECT_DIR$/Topics/LinkedList vs. ArrayList/Remove the same" />
+            <option value="$PROJECT_DIR$/Topics/LinkedList vs. ArrayList/The big merge" />
+            <option value="$PROJECT_DIR$/Topics/LinkedList vs. ArrayList/The fair exchange" />
+            <option value="$PROJECT_DIR$/Topics/LinkedList vs. ArrayList/Theory" />
+            <option value="$PROJECT_DIR$/Topics/LinkedList vs. ArrayList/Transfer both lists" />
+            <option value="$PROJECT_DIR$/Topics/Parameterized test/Method source" />
+            <option value="$PROJECT_DIR$/Topics/Parameterized test/Palindromes" />
+            <option value="$PROJECT_DIR$/Topics/Parameterized test/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Queue and Stack/Creating queue" />
+            <option value="$PROJECT_DIR$/Topics/Queue and Stack/Greedy load balance" />
+            <option value="$PROJECT_DIR$/Topics/Queue and Stack/Html Parser" />
+            <option value="$PROJECT_DIR$/Topics/Queue and Stack/The LIFO principle in action" />
+            <option value="$PROJECT_DIR$/Topics/Queue and Stack/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Queue and Stack/Working with queue" />
+            <option value="$PROJECT_DIR$/Topics/Relational operators/Check the sum" />
+            <option value="$PROJECT_DIR$/Topics/Relational operators/Is between" />
+            <option value="$PROJECT_DIR$/Topics/Relational operators/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Test lifecycle annotations/Test fixture" />
+            <option value="$PROJECT_DIR$/Topics/Test lifecycle annotations/Theory" />
+            <option value="$PROJECT_DIR$/Topics/The Map interface/Modifying a map" />
+            <option value="$PROJECT_DIR$/Topics/The Map interface/Theory" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/Arithmetic average" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/Fizz Buzz" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/Numbers divisible by six" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/Size of parts" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/The count of numbers divisible by N" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/The product of numbers from a to b" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/The roots of an equation" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/The sum of integers from a to b" />
+            <option value="$PROJECT_DIR$/Topics/The for-loop/Theory" />
+            <option value="$PROJECT_DIR$/Topics/The while and do-while loops/Profit" />
+            <option value="$PROJECT_DIR$/Topics/The while and do-while loops/The sequence" />
+            <option value="$PROJECT_DIR$/Topics/The while and do-while loops/The sum of elements" />
+            <option value="$PROJECT_DIR$/Topics/The while and do-while loops/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Unit testing with JUnit/Assertion" />
+            <option value="$PROJECT_DIR$/Topics/Unit testing with JUnit/Test driven development" />
+            <option value="$PROJECT_DIR$/Topics/Unit testing with JUnit/Theory" />
+            <option value="$PROJECT_DIR$/util" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

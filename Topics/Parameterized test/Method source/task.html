@@ -1,0 +1,24 @@
+<h2>Method source</h2>
+<html>
+ <head></head>
+ <body>
+  <p>Your task is to support testing of a <a target="_blank" href="https://en.wikipedia.org/wiki/Prime_number" rel="noopener noreferrer nofollow">prime number</a> checker that checks if the given number in the range from 10 to 1000, inclusive, is prime or not. The method you need to test is a part of <code class="language-java">IntUtils</code> class and is called <code class="language-java">isPrimeIn10To1000</code>. It accepts an <code class="language-java">int</code> number and returns <code class="language-java">true</code> or <code class="language-java">false</code> depending on if the passed number is prime or not:</p> 
+  <pre><code class="language-java">class IntUtils {
+    public static boolean isPrimeIn10To1000(int number) {
+        // some sophisticated math that only math nerds can comprehend
+    }
+}</code></pre> 
+  <p>Actually, there is no guarantee that the method you need to test works correctly, that's why there is a unit test set up to check it. Inside the test class, there is the almost ready to use test method:</p> 
+  <pre><code class="language-java">class CalculatorTests {
+
+    @ParameterizedTest
+    @MethodSource("TestHelper#primeGenerator")
+    void testIsPrimeInRange(int number) {
+        assertTrue(number &gt;= 10);
+        assertTrue(number &lt;= 1000);
+        assertTrue(IntUtils.isPrimeIn10To1000(number));
+    }
+}</code></pre> 
+  <p>To make the test work, you must implement <code class="language-java">primeGenerator</code>, a <code class="language-java">public static</code> method in the <code class="language-java">TestHelper</code> class that should return an array of at least 40 unique prime numbers within the range from 10 to 1000 that will be passed as arguments to the method under test. To successfully test the <code class="language-java">isPrimeIn10To1000</code> method, it is crucial to generate a sufficient number (at least 40) of prime numbers within the required range!</p>
+ </body>
+</html><br><br><font color="gray">Memory limit: 256 MB</font><br><font color="gray">Time limit: 5 seconds</font><br><br>

@@ -1,0 +1,14 @@
+type: code
+files:
+- name: src/Main.java
+  visible: true
+  text: "import java.util.*;\n\npublic class Main {\n\n    public static void main(String[]\
+    \ args) {  \n        // write your code here\n        System.out.println(queue);\n\
+    \    }\n}"
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/2337#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: Thu, 03 Feb 2022 04:18:42 UTC
+record: -1
