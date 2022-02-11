@@ -21,7 +21,7 @@ class TrackerAnalyserTest {
                 List.of(182365L, 0L, 0L, 0L, 8L),
                 List.of(182366L, 0L, 8L, 0L, 4L));
 
-        statistic = TrackerHelperFunction.initStatistic(testData);
+        statistic = TrackerTestUtil.init(testData);
     }
 
     @Test
