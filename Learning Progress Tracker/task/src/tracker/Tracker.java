@@ -260,9 +260,9 @@ public class Tracker {
     }
 
     public boolean isEmailTaken(String email) {
-        return studentMap.entrySet()
+        return studentMap.values()
                 .stream()
-                .anyMatch(studentEntry -> email.equals(studentEntry.getValue().getEmail()));
+                .anyMatch(student -> email.equals(student.getEmail()));
     }
 
     public Map<Long, Student> getStudentMap() {

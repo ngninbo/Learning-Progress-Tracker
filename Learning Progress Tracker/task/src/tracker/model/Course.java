@@ -51,10 +51,6 @@ public class Course {
         return isNotify;
     }
 
-    public void setNotify(boolean notify) {
-        isNotify = notify;
-    }
-
     public Course sendNotification(Student student) {
         if (student.hasCompleted(name) && !isNotify()) {
             System.out.printf(NOTIFICATION_MSG_FORMAT, student.getEmail(), student.getFullName(), name);

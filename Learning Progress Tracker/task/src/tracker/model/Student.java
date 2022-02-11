@@ -96,8 +96,7 @@ public class Student {
         Course course = courses.get(courseName);
         if (course.isCompleted() && !course.isNotify()) {
             Course tmp = course.sendNotification(this);
-                courses.replace(courseName, tmp);
-
+            courses.replace(courseName, tmp);
         }
         return this;
     }
