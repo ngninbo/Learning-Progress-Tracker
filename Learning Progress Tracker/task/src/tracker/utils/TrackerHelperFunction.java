@@ -1,18 +1,13 @@
 package tracker.utils;
 
-import tracker.builder.StudentBuilder;
-import tracker.builder.TrackerAnalyserBuilder;
 import tracker.model.Assignment;
 import tracker.model.Course;
 import tracker.model.Student;
-import tracker.statistics.Statistic;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class TrackerHelperFunction extends TrackerUtil {
 
@@ -23,25 +18,6 @@ public class TrackerHelperFunction extends TrackerUtil {
             progressData.append(String.format(format, s, course.getPoints()));
         });
         return progressData.toString();
-    }
-
-    public static Long getMaxPoints(String course) {
-        long maxPoint = 0;
-        switch (course) {
-            case "Java":
-                maxPoint = TrackerUtil.MAX_POINTS_JAVA;
-                break;
-            case "DSA":
-                maxPoint = TrackerUtil.MAX_POINTS_DSA;
-                break;
-            case "Databases":
-                maxPoint = TrackerUtil.MAX_POINTS_DATABASES;
-                break;
-            case "Spring":
-                maxPoint = TrackerUtil.MAX_POINTS_SPRING;
-                break;
-        }
-        return maxPoint;
     }
 
     public static Map<String, Long> initialSubmission() {

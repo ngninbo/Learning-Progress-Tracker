@@ -1,6 +1,6 @@
 package tracker.model;
 
-import tracker.utils.TrackerHelperFunction;
+import tracker.utils.TrackerUtil;
 
 import java.util.Objects;
 
@@ -15,7 +15,7 @@ public class Course {
 
     public Course(String name) {
         this.name = name;
-        this.maxPoints = TrackerHelperFunction.getMaxPoints(name);
+        this.maxPoints = getMaxPoints(name);
     }
 
     public Course(String name, long points) {
@@ -57,6 +57,25 @@ public class Course {
             this.isNotify = true;
         }
         return this;
+    }
+
+    public static Long getMaxPoints(String course) {
+        long maxPoint = 0;
+        switch (course) {
+            case "Java":
+                maxPoint = TrackerUtil.MAX_POINTS_JAVA;
+                break;
+            case "DSA":
+                maxPoint = TrackerUtil.MAX_POINTS_DSA;
+                break;
+            case "Databases":
+                maxPoint = TrackerUtil.MAX_POINTS_DATABASES;
+                break;
+            case "Spring":
+                maxPoint = TrackerUtil.MAX_POINTS_SPRING;
+                break;
+        }
+        return maxPoint;
     }
 
     @Override
