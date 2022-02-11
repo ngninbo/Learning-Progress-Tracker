@@ -3,7 +3,7 @@ package tracker.statistics;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import tracker.utils.TrackerHelperFunction;
+import tracker.utils.TrackerTestUtil;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ class TrackerAnalyserSecondTest {
                 List.of(10002L, 5L, 4L, 3L, 1L),
                 List.of(10003L, 5L, 4L, 3L, 1L));
 
-        statistic = TrackerHelperFunction.initStatistic(testData);
+        statistic = TrackerTestUtil.init(testData);
     }
 
     @Test

@@ -16,9 +16,9 @@ class StudentIdGeneratorTest {
     }
 
     @Test
-    @DisplayName("Should return 10000 as next available id")
+    @DisplayName("Should assert next id is greater or equals to 10000")
     void getNextId() {
         long next = 10000;
-        assertEquals(next, studentIdGenerator.getNextId());
+        assertTrue(studentIdGenerator.getNextId() >= next);
     }
 }

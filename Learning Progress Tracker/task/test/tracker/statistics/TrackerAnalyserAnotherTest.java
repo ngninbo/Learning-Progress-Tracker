@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tracker.utils.TrackerHelperFunction;
+import tracker.utils.TrackerTestUtil;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ class TrackerAnalyserAnotherTest {
                 List.of(10001L, 9L, 0L, 0L, 5L),
                 List.of(10001L, 7L, 0L, 0L, 0L));
 
-        statistic = TrackerHelperFunction.initStatistic(testData);
+        statistic = TrackerTestUtil.init(testData);
     }
 
     @Test
