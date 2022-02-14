@@ -3,13 +3,14 @@ package tracker.statistics;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import tracker.service.statistics.Statistic;
 import tracker.utils.TrackerTestUtil;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TrackerAnalyserAnotherTest {
+class TrackerStatisticsAnotherTest {
 
     private static Statistic statistic;
 

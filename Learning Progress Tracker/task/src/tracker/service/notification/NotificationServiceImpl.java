@@ -1,4 +1,4 @@
-package tracker.notification;
+package tracker.service.notification;
 
 import tracker.model.Course;
 import tracker.model.Student;

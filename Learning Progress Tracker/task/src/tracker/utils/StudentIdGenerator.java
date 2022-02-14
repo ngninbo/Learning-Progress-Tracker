@@ -13,7 +13,7 @@ public class StudentIdGenerator {
         return instance == null ? new StudentIdGenerator() : instance;
     }
 
-    public Long getNextId() {
+    public Long next() {
         incrementId();
         return initialId;
     }

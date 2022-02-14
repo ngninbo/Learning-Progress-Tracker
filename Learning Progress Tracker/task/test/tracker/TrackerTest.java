@@ -25,10 +25,7 @@ class TrackerTest {
     static void beforeAll() {
         studentIdGenerator = StudentIdGenerator.getInstance();
         tracker = TrackerBuilder.init()
-                .withStudentTable()
-                .withInitialSubmit()
-                .withAssignmentList()
-                .withStatistic()
+                .withTrackerController()
                 .build();
     }
 
@@ -36,7 +33,7 @@ class TrackerTest {
     @MethodSource("argStudentFactory")
     void testAddStudent(String firstname, String lastname, String email) {
 
-        final Long nextId = studentIdGenerator.getNextId();
+        final Long nextId = studentIdGenerator.next();
         assertTrue(nextId > MIN_ID);
         Student student = StudentBuilder.init()
                 .withId(nextId)
@@ -46,20 +43,20 @@ class TrackerTest {
 
         assertEquals(nextId, student.getId());
 
-        assertTrue(tracker.validateCredentials(student));
+        assertTrue(tracker.getTrackerService().validateCredentials(student));
     }
 
     @ParameterizedTest(name = "Update progress data for {0}. Should return with {1}")
     @MethodSource("argCoursePointsFactory")
     void updateStudentCoursePoints(List<Long> progressData, boolean isUpdate) {
-        assertEquals(isUpdate, tracker.updateStudentCoursePoints(progressData));
+        assertEquals(isUpdate, tracker.getTrackerService().updateStudentCoursePoints(progressData));
     }
 
 
     @ParameterizedTest(name = "Should throw exception for invalid list {0}")
     @MethodSource("argFactoryInvalidFormat")
     void isNotValid(List<Long> data) {
-        assertThrows(ClassCastException.class, () -> tracker.updateStudentCoursePoints(data));
+        assertThrows(ClassCastException.class, () -> tracker.getTrackerService().updateStudentCoursePoints(data));
     }
 
     static List<Arguments> argStudentFactory() {
@@ -95,14 +92,14 @@ class TrackerTest {
         @DisplayName("Should return true when student by id = 1000 not found")
         void isStudentNotFound() {
             long invalidId = 1000;
-            assertTrue(tracker.isStudentNotFound(invalidId));
+            assertTrue(tracker.getTrackerService().isStudentNotMatch(invalidId));
         }
 
         @Test
         @DisplayName("Should return false when student by id = 10000 found")
         void isStudentFound() {
             long invalidId = 10000;
-            assertFalse(tracker.isStudentNotFound(invalidId));
+            assertFalse(tracker.getTrackerService().isStudentNotMatch(invalidId));
         }
 
         @ParameterizedTest (name = "Check that the progress data of student with id = {0} were updated correctly")

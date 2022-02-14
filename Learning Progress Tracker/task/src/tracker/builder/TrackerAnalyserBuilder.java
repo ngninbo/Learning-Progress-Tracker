@@ -2,10 +2,10 @@ package tracker.builder;
 
 import tracker.model.Assignment;
 import tracker.model.Student;
-import tracker.statistics.CourseGroupSearchContext;
-import tracker.statistics.CourseStrengthSearchContext;
-import tracker.statistics.Finder;
-import tracker.statistics.TrackerAnalyser;
+import tracker.service.search.CourseGroupSearchContext;
+import tracker.service.search.CourseStrengthSearchContext;
+import tracker.service.search.Finder;
+import tracker.service.statistics.TrackerStatistics;
 
 import java.util.List;
 import java.util.Map;
@@ -56,8 +56,8 @@ public class TrackerAnalyserBuilder {
         return this;
     }
 
-    public TrackerAnalyser build() {
-        return new TrackerAnalyser(studentMap, courseSubmissions,
+    public TrackerStatistics build() {
+        return new TrackerStatistics(studentMap, courseSubmissions,
                 assignments, finder, searchContext, strengthSearchContext);
     }
 }

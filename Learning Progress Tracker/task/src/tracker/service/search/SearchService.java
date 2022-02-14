@@ -1,8 +1,8 @@
-package tracker.statistics;
+package tracker.service.search;
 
 import java.util.List;
 
-public interface FindStrategy {
+public interface SearchService {
 
     List<String> findMax();
     List<String> findMin();

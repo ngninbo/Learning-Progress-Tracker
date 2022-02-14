@@ -3,6 +3,7 @@ package tracker.statistics;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import tracker.service.statistics.Statistic;
 import tracker.utils.TrackerTestUtil;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static tracker.utils.TrackerUtil.BASE_COURSES;
 
-class TrackerAnalyserSecondTest {
+class TrackerStatisticsSecondTest {
 
     private static Statistic statistic;
 

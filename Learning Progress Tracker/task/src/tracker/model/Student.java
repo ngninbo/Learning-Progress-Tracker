@@ -69,7 +69,7 @@ public class Student {
     }
 
     public boolean isEnrolled(String course) {
-        return courses.size() > 0 && courses.get(course).isEnrolled();
+        return !courses.isEmpty() && courses.get(course).isEnrolled();
     }
 
     public Long sumPoints(String courseName) {

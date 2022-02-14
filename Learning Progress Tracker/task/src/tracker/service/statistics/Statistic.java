@@ -1,4 +1,4 @@
-package tracker.statistics;
+package tracker.service.statistics;
 
 import tracker.model.Assignment;
 import tracker.model.Student;
@@ -17,6 +17,6 @@ public interface Statistic {
     void showCourseDetails(String courseName);
     Statistic setStudentMap(Map<Long, Student> studentMap);
     Statistic setCourseSubmission(Map<String, Long> courseSubmission);
-    Statistic setAssignments(List<Assignment> assignments);
+    void setAssignments(List<Assignment> assignments);
     String findCourseByCategory(String category);
 }

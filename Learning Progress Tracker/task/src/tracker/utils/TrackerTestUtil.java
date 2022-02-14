@@ -5,7 +5,7 @@ import tracker.builder.TrackerAnalyserBuilder;
 import tracker.model.Assignment;
 import tracker.model.Course;
 import tracker.model.Student;
-import tracker.statistics.Statistic;
+import tracker.service.statistics.Statistic;
 
 import java.util.ArrayList;
 import java.util.List;

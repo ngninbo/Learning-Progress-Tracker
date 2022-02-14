@@ -1,4 +1,4 @@
-package tracker.statistics;
+package tracker.service.search;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class CourseGroupSearchContext implements FindStrategy {
+public class CourseStrengthSearchContext implements SearchService {
 
-    private Map<String, Long> map;
+    private Map<String, Double> map;
 
-    public CourseGroupSearchContext setMap(Map<String, Long> map) {
+    public CourseStrengthSearchContext setMap(Map<String, Double> map) {
         this.map = map;
         return this;
     }

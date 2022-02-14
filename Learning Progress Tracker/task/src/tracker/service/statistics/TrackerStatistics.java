@@ -1,12 +1,15 @@
-package tracker.statistics;
+package tracker.service.statistics;
 
 import tracker.model.Assignment;
 import tracker.model.Student;
+import tracker.service.search.CourseGroupSearchContext;
+import tracker.service.search.CourseStrengthSearchContext;
+import tracker.service.search.Finder;
 
 import java.util.*;
 import static tracker.utils.TrackerHelperFunction.*;
 
-public class TrackerAnalyser implements Statistic {
+public class TrackerStatistics implements Statistic {
 
     private Map<Long, Student> studentMap;
     private Map<String, Long> courseSubmission;
@@ -16,12 +19,12 @@ public class TrackerAnalyser implements Statistic {
     private final CourseGroupSearchContext searchContext;
     private final CourseStrengthSearchContext strengthSearchContext;
 
-    public TrackerAnalyser(Map<Long, Student> studentMap,
-                           Map<String, Long> courseSubmission,
-                           List<Assignment> assignments,
-                           Finder finder,
-                           CourseGroupSearchContext searchContext,
-                           CourseStrengthSearchContext courseStrengthSearchContext) {
+    public TrackerStatistics(Map<Long, Student> studentMap,
+                             Map<String, Long> courseSubmission,
+                             List<Assignment> assignments,
+                             Finder finder,
+                             CourseGroupSearchContext searchContext,
+                             CourseStrengthSearchContext courseStrengthSearchContext) {
         this.studentMap = studentMap;
         this.courseSubmission = courseSubmission;
         this.assignments = assignments;
@@ -40,9 +43,8 @@ public class TrackerAnalyser implements Statistic {
         return this;
     }
 
-    public Statistic setAssignments(List<Assignment> assignments) {
+    public void setAssignments(List<Assignment> assignments) {
         this.assignments = assignments;
-        return this;
     }
 
     @Override

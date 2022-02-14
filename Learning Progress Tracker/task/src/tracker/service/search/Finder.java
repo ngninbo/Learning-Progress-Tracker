@@ -1,12 +1,12 @@
-package tracker.statistics;
+package tracker.service.search;
 
 import java.util.List;
 
 public class Finder {
 
-    private FindStrategy strategy;
+    private SearchService strategy;
 
-    public Finder setStrategy(FindStrategy strategy) {
+    public Finder setStrategy(SearchService strategy) {
         this.strategy = strategy;
         return this;
     }

@@ -1018,41 +1018,6 @@ files:
         }
     }
   learner_created: false
-- name: src/tracker/statistics/CourseGroupSearchContext.java
-  visible: true
-  text: |
-    package tracker.statistics;
-
-    import java.util.Collections;
-    import java.util.List;
-    import java.util.Map;
-    import java.util.Objects;
-    import java.util.stream.Collectors;
-
-    public class CourseGroupSearchContext implements FindStrategy {
-
-        private Map<String, Long> map;
-
-        public CourseGroupSearchContext setMap(Map<String, Long> map) {
-            this.map = map;
-            return this;
-        }
-
-        @Override
-        public List<String> findMax() {
-            return map.entrySet()
-                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.max(map.values())))
-                    .map(Map.Entry::getKey).collect(Collectors.toList());
-        }
-
-        @Override
-        public List<String> findMin() {
-            return map.entrySet()
-                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.min(map.values())))
-                    .map(Map.Entry::getKey).collect(Collectors.toList());
-        }
-    }
-  learner_created: true
 - name: src/tracker/model/Course.java
   visible: true
   text: |
@@ -1562,32 +1527,6 @@ files:
         public static final double PERCENT = 100.0;
     }
   learner_created: true
-- name: src/tracker/statistics/Statistic.java
-  visible: true
-  text: |
-    package tracker.statistics;
-
-    import tracker.model.Assignment;
-    import tracker.model.Student;
-
-    import java.util.List;
-    import java.util.Map;
-
-    public interface Statistic {
-
-        List<String> findMostPopularCourses();
-        List<String> findLeastPopularCourse();
-        List<String> findHardestCourse();
-        List<String> findEasiestCourse();
-        List<String> findCourseWithHighestActivity();
-        List<String> findCourseWithLowestActivity();
-        void showCourseDetails(String courseName);
-        Statistic setStudentMap(Map<Long, Student> studentMap);
-        Statistic setCourseSubmission(Map<String, Long> courseSubmission);
-        Statistic setAssignments(List<Assignment> assignments);
-        String findCourseByCategory(String category);
-    }
-  learner_created: true
 - name: src/tracker/utils/Validator.java
   visible: true
   text: |
@@ -1617,31 +1556,6 @@ files:
 
         public static boolean isValid(List<Long> progressData) {
             return progressData.size() == PROGRESS_DATA_SIZE && progressData.stream().allMatch(number -> number >= 0L);
-        }
-    }
-  learner_created: true
-- name: src/tracker/statistics/Finder.java
-  visible: true
-  text: |
-    package tracker.statistics;
-
-    import java.util.List;
-
-    public class Finder {
-
-        private FindStrategy strategy;
-
-        public Finder setStrategy(FindStrategy strategy) {
-            this.strategy = strategy;
-            return this;
-        }
-
-        public List<String> findMax() {
-            return strategy.findMax();
-        }
-
-        public List<String> findMin() {
-            return strategy.findMin();
         }
     }
   learner_created: true
@@ -1690,41 +1604,6 @@ files:
 
         public Student build() {
             return new Student(id, firstname, lastname, email, courses);
-        }
-    }
-  learner_created: true
-- name: src/tracker/statistics/CourseStrengthSearchContext.java
-  visible: true
-  text: |
-    package tracker.statistics;
-
-    import java.util.Collections;
-    import java.util.List;
-    import java.util.Map;
-    import java.util.Objects;
-    import java.util.stream.Collectors;
-
-    public class CourseStrengthSearchContext implements FindStrategy {
-
-        private Map<String, Double> map;
-
-        public CourseStrengthSearchContext setMap(Map<String, Double> map) {
-            this.map = map;
-            return this;
-        }
-
-        @Override
-        public List<String> findMax() {
-            return map.entrySet()
-                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.max(map.values())))
-                    .map(Map.Entry::getKey).collect(Collectors.toList());
-        }
-
-        @Override
-        public List<String> findMin() {
-            return map.entrySet()
-                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.min(map.values())))
-                    .map(Map.Entry::getKey).collect(Collectors.toList());
         }
     }
   learner_created: true
@@ -1932,7 +1811,221 @@ files:
         }
     }
   learner_created: true
-- name: src/tracker/statistics/TrackerAnalyser.java
+- name: src/tracker/model/Assignment.java
+  visible: true
+  text: |
+    package tracker.model;
+
+    import java.util.Objects;
+
+    public class Assignment {
+
+        private final Long studentId;
+        private final Course course;
+
+        public Assignment(Long studentId, Course course) {
+            this.studentId = studentId;
+            this.course = course;
+        }
+
+        public Long getStudentId() {
+            return studentId;
+        }
+
+        public Course getCourse() {
+            return course;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Assignment)) return false;
+            Assignment that = (Assignment) o;
+            return Objects.equals(getStudentId(), that.getStudentId()) && Objects.equals(getCourse(), that.getCourse());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getStudentId(), getCourse());
+        }
+
+        @Override
+        public String toString() {
+            return "Assignment{" +
+                    "studentId=" + studentId +
+                    ", course=" + course +
+                    '}';
+        }
+    }
+  learner_created: true
+- name: src/tracker/utils/StudentIdGenerator.java
+  visible: true
+  text: |
+    package tracker.utils;
+
+    public class StudentIdGenerator {
+
+        private static final StudentIdGenerator instance = new StudentIdGenerator();
+
+        private Long initialId = TrackerUtil.MIN_ID;
+
+        private StudentIdGenerator() {
+        }
+
+        public static StudentIdGenerator getInstance() {
+            return instance == null ? new StudentIdGenerator() : instance;
+        }
+
+        public Long getNextId() {
+            incrementId();
+            return initialId;
+        }
+
+        private void incrementId() {
+            initialId++;
+        }
+    }
+  learner_created: true
+- name: test/tracker/model/StudentTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/model/CourseTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/utils/StudentIdGeneratorTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/BetaTest.java
+  visible: true
+  learner_created: true
+- name: test/tracker/utils/ValidatorTest.java
+  visible: true
+  learner_created: true
+- name: src/tracker/utils/TrackerTestUtil.java
+  visible: true
+  learner_created: true
+- name: src/tracker/service/TrackerService.java
+  visible: true
+  learner_created: true
+- name: src/tracker/service/notification/NotificationService.java
+  visible: true
+  learner_created: true
+- name: src/tracker/service/notification/NotificationServiceImpl.java
+  visible: true
+  learner_created: true
+- name: src/tracker/service/search/CourseStrengthSearchContext.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import java.util.Collections;
+    import java.util.List;
+    import java.util.Map;
+    import java.util.Objects;
+    import java.util.stream.Collectors;
+
+    public class CourseStrengthSearchContext implements FindStrategy {
+
+        private Map<String, Double> map;
+
+        public CourseStrengthSearchContext setMap(Map<String, Double> map) {
+            this.map = map;
+            return this;
+        }
+
+        @Override
+        public List<String> findMax() {
+            return map.entrySet()
+                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.max(map.values())))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+        }
+
+        @Override
+        public List<String> findMin() {
+            return map.entrySet()
+                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.min(map.values())))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+        }
+    }
+  learner_created: true
+- name: src/tracker/service/search/CourseGroupSearchContext.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import java.util.Collections;
+    import java.util.List;
+    import java.util.Map;
+    import java.util.Objects;
+    import java.util.stream.Collectors;
+
+    public class CourseGroupSearchContext implements FindStrategy {
+
+        private Map<String, Long> map;
+
+        public CourseGroupSearchContext setMap(Map<String, Long> map) {
+            this.map = map;
+            return this;
+        }
+
+        @Override
+        public List<String> findMax() {
+            return map.entrySet()
+                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.max(map.values())))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+        }
+
+        @Override
+        public List<String> findMin() {
+            return map.entrySet()
+                    .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.min(map.values())))
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+        }
+    }
+  learner_created: true
+- name: src/tracker/service/search/SearchService.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import java.util.List;
+
+    public interface FindStrategy {
+
+        List<String> findMax();
+        List<String> findMin();
+    }
+  learner_created: true
+- name: src/tracker/service/statistics/Statistic.java
+  visible: true
+  text: |
+    package tracker.statistics;
+
+    import tracker.model.Assignment;
+    import tracker.model.Student;
+
+    import java.util.List;
+    import java.util.Map;
+
+    public interface Statistic {
+
+        List<String> findMostPopularCourses();
+        List<String> findLeastPopularCourse();
+        List<String> findHardestCourse();
+        List<String> findEasiestCourse();
+        List<String> findCourseWithHighestActivity();
+        List<String> findCourseWithLowestActivity();
+        void showCourseDetails(String courseName);
+        Statistic setStudentMap(Map<Long, Student> studentMap);
+        Statistic setCourseSubmission(Map<String, Long> courseSubmission);
+        Statistic setAssignments(List<Assignment> assignments);
+        String findCourseByCategory(String category);
+    }
+  learner_created: true
+- name: src/tracker/builder/TrackerControllerBuilder.java
+  visible: true
+  learner_created: true
+- name: src/tracker/service/statistics/TrackerStatistics.java
   visible: true
   text: |
     package tracker.statistics;
@@ -2100,151 +2193,47 @@ files:
         }
     }
   learner_created: true
-- name: src/tracker/model/Assignment.java
+- name: test/tracker/statistics/TrackerStatisticsAnotherTest.java
   visible: true
-  text: |
-    package tracker.model;
-
-    import java.util.Objects;
-
-    public class Assignment {
-
-        private final Long studentId;
-        private final Course course;
-
-        public Assignment(Long studentId, Course course) {
-            this.studentId = studentId;
-            this.course = course;
-        }
-
-        public Long getStudentId() {
-            return studentId;
-        }
-
-        public Course getCourse() {
-            return course;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Assignment)) return false;
-            Assignment that = (Assignment) o;
-            return Objects.equals(getStudentId(), that.getStudentId()) && Objects.equals(getCourse(), that.getCourse());
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(getStudentId(), getCourse());
-        }
-
-        @Override
-        public String toString() {
-            return "Assignment{" +
-                    "studentId=" + studentId +
-                    ", course=" + course +
-                    '}';
-        }
-    }
   learner_created: true
-- name: src/tracker/utils/CourseOption.java
+- name: test/tracker/statistics/TrackerStatisticsSecondTest.java
   visible: true
-  text: |
-    package tracker.utils;
-
-    public enum CourseOption {
-
-        JAVA (600),
-        DSA (400),
-        DATABASES (480),
-        SPRING (550);
-
-        CourseOption(final long maxPoints) {
-            this.maxPoints = maxPoints;
-        }
-
-        private final long maxPoints;
-
-        public long getMaxPoints() {
-            return maxPoints;
-        }
-    }
   learner_created: true
-- name: src/tracker/utils/StudentIdGenerator.java
+- name: test/tracker/utils/TrackerStatisticsTest.java
   visible: true
-  text: |
-    package tracker.utils;
-
-    public class StudentIdGenerator {
-
-        private static final StudentIdGenerator instance = new StudentIdGenerator();
-
-        private Long initialId = TrackerUtil.MIN_ID;
-
-        private StudentIdGenerator() {
-        }
-
-        public static StudentIdGenerator getInstance() {
-            return instance == null ? new StudentIdGenerator() : instance;
-        }
-
-        public Long getNextId() {
-            incrementId();
-            return initialId;
-        }
-
-        private void incrementId() {
-            initialId++;
-        }
-    }
   learner_created: true
-- name: src/tracker/statistics/FindStrategy.java
+- name: src/tracker/service/TrackerController.java
+  visible: true
+  learner_created: true
+- name: src/tracker/service/search/Finder.java
   visible: true
   text: |
     package tracker.statistics;
 
     import java.util.List;
 
-    public interface FindStrategy {
+    public class Finder {
 
-        List<String> findMax();
-        List<String> findMin();
+        private FindStrategy strategy;
+
+        public Finder setStrategy(FindStrategy strategy) {
+            this.strategy = strategy;
+            return this;
+        }
+
+        public List<String> findMax() {
+            return strategy.findMax();
+        }
+
+        public List<String> findMin() {
+            return strategy.findMin();
+        }
     }
-  learner_created: true
-- name: src/tracker/notification/NotificationService.java
-  visible: true
-  learner_created: true
-- name: src/tracker/notification/NotificationServiceImpl.java
-  visible: true
-  learner_created: true
-- name: test/tracker/model/StudentTest.java
-  visible: true
-  learner_created: true
-- name: test/tracker/model/CourseTest.java
-  visible: true
-  learner_created: true
-- name: test/tracker/statistics/TrackerAnalyserAnotherTest.java
-  visible: true
-  learner_created: true
-- name: test/tracker/statistics/TrackerAnalyserSecondTest.java
-  visible: true
-  learner_created: true
-- name: test/tracker/utils/StudentIdGeneratorTest.java
-  visible: true
-  learner_created: true
-- name: test/tracker/BetaTest.java
-  visible: true
-  learner_created: true
-- name: test/tracker/utils/TrackerAnalyserTest.java
-  visible: true
-  learner_created: true
-- name: test/tracker/utils/ValidatorTest.java
-  visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/14400#comment
 status: Solved
 feedback:
   message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
     Academy</a> to continue learning.
-  time: Fri, 11 Feb 2022 07:08:04 UTC
+  time: Mon, 14 Feb 2022 06:59:40 UTC
 record: -1
