@@ -85,19 +85,6 @@ public class TrackerStatistics implements Statistic {
         return stringBuilder.isEmpty() ? "n/a" : stringBuilder;
     }
 
-    private String stringifyCourseList(List<String> courses) {
-        StringBuilder sb;
-        sb = new StringBuilder();
-        for (int i = 0; i < courses.size(); i++) {
-            sb.append(courses.get(i));
-            if (i < courses.size() - 1) {
-                sb.append(", ");
-            }
-        }
-
-        return sb.toString();
-    }
-
 
     @Override
     public List<String> findMostPopularCourses() {

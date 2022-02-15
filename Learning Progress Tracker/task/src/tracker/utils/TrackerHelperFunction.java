@@ -61,4 +61,17 @@ public class TrackerHelperFunction extends TrackerUtil {
 
         return averageGradMap;
     }
+
+    public static String stringifyCourseList(List<String> courses) {
+        StringBuilder sb;
+        sb = new StringBuilder();
+        for (int i = 0; i < courses.size(); i++) {
+            sb.append(courses.get(i));
+            if (i < courses.size() - 1) {
+                sb.append(", ");
+            }
+        }
+
+        return sb.toString();
+    }
 }
