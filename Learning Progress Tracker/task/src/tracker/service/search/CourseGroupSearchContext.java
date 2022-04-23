@@ -18,14 +18,17 @@ public class CourseGroupSearchContext implements SearchService {
     @Override
     public List<String> findMax() {
         return map.entrySet()
-                .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.max(map.values())))
-                .map(Map.Entry::getKey).collect(Collectors.toList());
+                .stream()
+                .filter(entry -> Objects.equals(entry.getValue(), Collections.max(map.values())))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<String> findMin() {
         return map.entrySet()
-                .stream().filter(stringLongEntry -> Objects.equals(stringLongEntry.getValue(), Collections.min(map.values())))
-                .map(Map.Entry::getKey).collect(Collectors.toList());
+                .stream().filter(entry -> Objects.equals(entry.getValue(), Collections.min(map.values())))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 }

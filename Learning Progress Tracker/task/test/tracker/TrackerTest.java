@@ -37,7 +37,9 @@ class TrackerTest {
         assertTrue(nextId > MIN_ID);
         Student student = StudentBuilder.init()
                 .withId(nextId)
-                .withCredentials(firstname, lastname, email)
+                .withFirstname(firstname)
+                .withLastname(lastname)
+                .withEmail(email)
                 .withCourses()
                 .build();
 

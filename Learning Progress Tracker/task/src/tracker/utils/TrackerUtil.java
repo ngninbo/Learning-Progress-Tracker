@@ -14,9 +14,10 @@ public class TrackerUtil {
     public static final String EXIT_CMD = "exit";
 
     public static final String ENTER_EXIT_CMD = "Enter 'exit' to exit the program.";
-    public static final String ENTER_CREDENTIALS_CMD = "Enter student credentials or 'back' to return:";
-    public static final String ENTER_STUDENT_COURSES_INFORMATION_CMD = "Enter an id and points or 'back' to return";
-    public static final String ENTER_STUDENT_ID_CMD = "Enter an id or 'back' to return";
+    public static final String STUDENT_CREDENTIALS = "student credentials";
+    public static final String COURSES_ACHIEVEMENT = "id and points";
+    public static final String STUDENT_ID = "id";
+    public static final String ENTER_CMD = "Enter %s or 'back' to return:\n";
     public static final String STATISTIC_OVERVIEW_CMD = "Type the name of a course to see details or 'back' to quit:";
 
     public static final String PROGRAM_TITLE = "Learning Progress Tracker";
@@ -31,11 +32,12 @@ public class TrackerUtil {
     public static final String STUDENT_LIST_EMPTY_MSG = "No students found";
     public static final String ERROR_UNKNOWN_COMMAND = "Error: unknown command!";
     public static final String NO_INPUT = "No input.";
-    public static final String INCORRECT_FIRSTNAME = "Incorrect first name.";
-    public static final String INCORRECT_LASTNAME = "Incorrect last name.";
-    public static final String INCORRECT_EMAIL = "Incorrect email.";
-    public static final String INCORRECT_CREDENTIALS = "Incorrect credentials.";
-    public static final String INCORRECT_POINTS_FORMAT = "Incorrect points format.";
+    public static final String FIRSTNAME = "first name";
+    public static final String LASTNAME = "last name";
+    public static final String EMAIL = "email";
+    public static final String CREDENTIALS = "credentials";
+    public static final String POINTS_FORMAT = "points format";
+    public static final String ERROR_MSG_FORMAT = "Incorrect %s.\n";
     public static final String NOT_AVAILABLE_EMAIL = "This email is already taken.";
 
     public static final String NAME_REGEX = "^[A-Za-z]+[-']?[A-Za-z]+";
@@ -47,9 +49,26 @@ public class TrackerUtil {
             "Hello, %s! You have accomplished our %s course!\n";
     public static final String NOTIFICATION_SUCCEED_MSG = "Total %s students have been notified.\n";
 
-    public static final List<String> BASE_COURSES = List.of("Java", "DSA", "Databases", "Spring");
-    public static final List<String> STATISTICS_ROWS_NAMES = List.of("Most popular", "Least popular",
-            "Highest activity", "Lowest activity", "Easiest course", "Hardest course");
+    public static final String JAVA = "Java";
+    public static final String DSA = "DSA";
+    public static final String DATABASES = "Databases";
+    public static final String SPRING = "Spring";
+
+    public static final List<String> BASE_COURSES = List.of(
+            JAVA,
+            DSA,
+            DATABASES,
+            SPRING
+    );
+
+    public static final List<String> STATISTICS_ROWS_NAMES = List.of(
+            "Most popular",
+            "Least popular",
+            "Highest activity",
+            "Lowest activity",
+            "Easiest course",
+            "Hardest course"
+    );
 
     public static final long MIN_ID = 9999L;
     public static final long MAX_POINTS_JAVA = 600;

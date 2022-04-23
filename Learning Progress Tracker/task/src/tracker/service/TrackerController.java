@@ -49,7 +49,7 @@ public class TrackerController implements TrackerService {
 
     @Override
     public void addStudents() {
-        System.out.println(ENTER_CREDENTIALS_CMD);
+        System.out.printf(ENTER_CMD, STUDENT_CREDENTIALS);
         boolean goBack = false;
 
         while (!goBack) {
@@ -60,7 +60,7 @@ public class TrackerController implements TrackerService {
                 System.out.printf(TOTAL_STUDENT_REPORT, studentMap.size());
                 goBack = true;
             } else if (size <= 2) {
-                System.out.println(INCORRECT_CREDENTIALS);
+                System.out.printf(ERROR_MSG_FORMAT, CREDENTIALS);
             } else {
 
                 String firstname = credentials.get(0).trim();
@@ -76,7 +76,9 @@ public class TrackerController implements TrackerService {
 
                 Student student = StudentBuilder.init()
                         .withId(studentId)
-                        .withCredentials(firstname, lastname.toString().trim(), email)
+                        .withFirstname(firstname)
+                        .withLastname(lastname.toString().trim())
+                        .withEmail(email)
                         .withCourses()
                         .build();
 
@@ -99,11 +101,11 @@ public class TrackerController implements TrackerService {
 
         } else {
             if (!student.hasValidFirstName()) {
-                System.out.println(INCORRECT_FIRSTNAME);
+                System.out.printf(ERROR_MSG_FORMAT, FIRSTNAME);
             } else if (!student.hasValidLastName()) {
-                System.out.println(INCORRECT_LASTNAME);
+                System.out.printf(ERROR_MSG_FORMAT, LASTNAME);
             } else {
-                System.out.println(INCORRECT_EMAIL);
+                System.out.printf(ERROR_MSG_FORMAT, EMAIL);
             }
         }
 
@@ -125,7 +127,7 @@ public class TrackerController implements TrackerService {
     @Override
     public void addPoints() {
         boolean isBackEntered = false;
-        System.out.println(ENTER_STUDENT_COURSES_INFORMATION_CMD);
+        System.out.printf(ENTER_CMD, COURSES_ACHIEVEMENT);
         while (!isBackEntered) {
             List<String> progressData = List.of(new Scanner(System.in).nextLine().split("\\s"));
             final String studentId = progressData.get(0);
@@ -180,7 +182,7 @@ public class TrackerController implements TrackerService {
 
     @Override
     public void findStudent() {
-        System.out.println(ENTER_STUDENT_ID_CMD);
+        System.out.printf(ENTER_CMD, STUDENT_ID);
         boolean goBack = false;
         while (!goBack) {
 
@@ -203,7 +205,7 @@ public class TrackerController implements TrackerService {
     @Override
     public boolean updateStudentCoursePoints(List<Long> progressData) {
         if (!Validator.isValid(progressData)) {
-            System.out.println(INCORRECT_POINTS_FORMAT);
+            System.out.printf(ERROR_MSG_FORMAT, POINTS_FORMAT);
         } else {
             long id = progressData.get(0);
             if (isStudentNotMatch(id)) {

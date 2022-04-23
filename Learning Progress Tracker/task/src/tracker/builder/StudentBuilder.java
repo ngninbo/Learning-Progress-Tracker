@@ -26,9 +26,17 @@ public class StudentBuilder {
         return this;
     }
 
-    public StudentBuilder withCredentials(String firstname, String lastname, String email) {
+    public StudentBuilder withFirstname(String firstname) {
         this.firstname = firstname;
+        return this;
+    }
+
+    public StudentBuilder withLastname(String lastname) {
         this.lastname = lastname;
+        return this;
+    }
+
+    public StudentBuilder withEmail(String email) {
         this.email = email;
         return this;
     }

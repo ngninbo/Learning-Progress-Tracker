@@ -13,13 +13,41 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class StudentTest {
 
-    @ParameterizedTest (name = "Should returns {3} for firstname = {0}, lastname = {1} and email = {2}")
+    private Student student;
+
+    @ParameterizedTest (name = "Should return {3} for firstname = {0}, lastname = {1} and email = {2}")
     @MethodSource("argCredentialsFactory")
     void testValidityCredentials(String firstname, String lastname, String email, boolean valid) {
-       Student student = StudentBuilder.init()
-               .withCredentials(firstname, lastname, email)
+       student = StudentBuilder.init()
+               .withFirstname(firstname)
+               .withLastname(lastname)
+               .withEmail(email)
                .build();
         assertEquals(valid, student.isValid());
+    }
+
+
+    @ParameterizedTest (name = "Should throw NullPointException for firstname = {0}, lastname = {1} and email = {2}")
+    @MethodSource("argExceptionFactory")
+    void testException(String firstname, String lastname, String email) {
+
+        StudentBuilder studentBuilder = StudentBuilder.init();
+
+        if (firstname != null) {
+            studentBuilder = studentBuilder.withFirstname(firstname);
+        }
+
+        if (lastname != null) {
+            studentBuilder = studentBuilder.withLastname(lastname);
+        }
+
+        if (email != null) {
+            studentBuilder = studentBuilder.withEmail(email);
+        }
+
+        student = studentBuilder.build();
+
+        assertThrows(NullPointerException.class, student::isValid);
     }
 
     static List<Arguments> argCredentialsFactory() {
@@ -34,6 +62,14 @@ class StudentTest {
                 arguments("John", "D.", "name@domain.com", false),
                 arguments("陳", "港", "生", false),
                 arguments("J.", "Doe", "name@domain.com", false));
+    }
+
+    static List<Arguments> argExceptionFactory() {
+        return List.of(
+                arguments("Jean-Clause", null, "jc@google.it"),
+                arguments(null, "Luise Johnson", "maryj@google.com"),
+                arguments("John", "Doe", null)
+        );
     }
 
     @Nested

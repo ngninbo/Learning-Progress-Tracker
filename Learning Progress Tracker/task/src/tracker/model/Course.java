@@ -1,10 +1,8 @@
 package tracker.model;
 
-import tracker.utils.TrackerUtil;
-
 import java.util.Objects;
 
-import static tracker.utils.TrackerUtil.NOTIFICATION_MSG_FORMAT;
+import static tracker.utils.TrackerUtil.*;
 
 public class Course {
 
@@ -60,22 +58,18 @@ public class Course {
     }
 
     public static Long getMaxPoints(String course) {
-        long maxPoint = 0;
         switch (course) {
-            case "Java":
-                maxPoint = TrackerUtil.MAX_POINTS_JAVA;
-                break;
-            case "DSA":
-                maxPoint = TrackerUtil.MAX_POINTS_DSA;
-                break;
-            case "Databases":
-                maxPoint = TrackerUtil.MAX_POINTS_DATABASES;
-                break;
-            case "Spring":
-                maxPoint = TrackerUtil.MAX_POINTS_SPRING;
-                break;
+            case JAVA:
+                return MAX_POINTS_JAVA;
+            case DSA:
+                return MAX_POINTS_DSA;
+            case DATABASES:
+                return MAX_POINTS_DATABASES;
+            case SPRING:
+                return MAX_POINTS_SPRING;
+            default:
+                return 0L;
         }
-        return maxPoint;
     }
 
     @Override
