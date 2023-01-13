@@ -1967,9 +1967,6 @@ files:
 - name: src/tracker/command/TrackerNotifyCommand.java
   visible: true
   learner_created: true
-- name: src/tracker/util/TrackerSerializer.java
-  visible: true
-  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/14400#comment
 status: Solved
 feedback:

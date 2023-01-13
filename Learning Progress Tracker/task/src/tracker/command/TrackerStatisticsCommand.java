@@ -89,24 +89,26 @@ public class TrackerStatisticsCommand implements Command {
 
 
     public List<String> findMostPopularCourses() {
-        return finder.setStrategy(searchContext.setMap(findEnrolledStudentPerCourse(studentMap)))
+        return finder
+                .setStrategy(searchContext.setMap(findEnrolledStudentPerCourse(studentMap)))
                 .findMax();
     }
 
     public List<String> findLeastPopularCourse() {
-        return finder.setStrategy(searchContext.setMap(findEnrolledStudentPerCourse(studentMap)))
+        return finder
+                .setStrategy(searchContext.setMap(findEnrolledStudentPerCourse(studentMap)))
                 .findMin();
     }
 
     public List<String> findHardestCourse() {
-        return finder.setStrategy(strengthSearchContext
-                        .setMap(findAverageGradPerAssignmentEachCourse(assignments)))
+        return finder
+                .setStrategy(strengthSearchContext.setMap(findAverageGradPerAssignmentEachCourse(assignments)))
                 .findMin();
     }
 
     public List<String> findEasiestCourse() {
-        return finder.setStrategy(strengthSearchContext
-                        .setMap(findAverageGradPerAssignmentEachCourse(assignments)))
+        return finder
+                .setStrategy(strengthSearchContext.setMap(findAverageGradPerAssignmentEachCourse(assignments)))
                 .findMax();
     }
 
@@ -114,8 +116,8 @@ public class TrackerStatisticsCommand implements Command {
         if (courseSubmission.values().stream().allMatch((aLong -> aLong == 0))) {
             return Collections.emptyList();
         }
-        return finder.setStrategy(searchContext
-                        .setMap(courseSubmission))
+        return finder
+                .setStrategy(searchContext.setMap(courseSubmission))
                 .findMax();
     }
 
@@ -124,8 +126,8 @@ public class TrackerStatisticsCommand implements Command {
         if (courseSubmission.values().stream().allMatch((aLong -> aLong == 0))) {
             return Collections.emptyList();
         }
-        return finder.setStrategy(searchContext
-                        .setMap(courseSubmission))
+        return finder
+                .setStrategy(searchContext.setMap(courseSubmission))
                 .findMin();
     }
 

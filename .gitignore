@@ -1,0 +1,7 @@
+# Project exclude paths
+/.gradle/
+/Learning Progress Tracker/task/build/
+/Learning Progress Tracker/task/out/
+/Learning Progress Tracker/task/out/production/classes/
+/Topics/Choosing the right collection/Substitution cipher/out/
+/Topics/Choosing the right collection/Substitution cipher/out/production/classes/

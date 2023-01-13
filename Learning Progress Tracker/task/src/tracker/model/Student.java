@@ -1,7 +1,6 @@
 package tracker.model;
 
 import lombok.*;
-import tracker.util.TrackerUtil;
 import tracker.util.TrackerValidator;
 
 import java.math.BigDecimal;
@@ -57,8 +56,9 @@ public class Student {
 
     public double progress(String courseName) {
         final Course course = courses.get(courseName);
-        return new BigDecimal((double) sumPoints(courseName) * TrackerUtil.PERCENT / course.getMaxPoints())
-                .setScale(1, RoundingMode.HALF_UP)
+        return BigDecimal.valueOf(sumPoints(courseName))
+                .multiply(BigDecimal.TEN.multiply(BigDecimal.TEN))
+                .divide(BigDecimal.valueOf(course.getMaxPoints()), 1, RoundingMode.HALF_UP)
                 .doubleValue();
     }
 
@@ -66,17 +66,14 @@ public class Student {
         return String.format("%s %s", firstname, lastname);
     }
 
-    public Student sendNotification(String courseName) {
+    public boolean sendNotification(String courseName) {
         Course course = courses.get(courseName);
-        if (course.isCompleted() && !course.isNotify()) {
-            System.out.printf(NOTIFICATION_MSG_FORMAT, this.getEmail(), this.getFullName(), courseName);
-            course.setNotify(true);
+        if (course.isCompleted() && !course.isNotified()) {
+            System.out.printf(NOTIFICATION_MSG_FORMAT, email, this.getFullName(), courseName);
+            course.setNotified(true);
             courses.replace(courseName, course);
+            return true;
         }
-        return this;
-    }
-
-    public boolean isNotifyFor(String courseName) {
-        return courses.get(courseName).isNotify();
+        return false;
     }
 }

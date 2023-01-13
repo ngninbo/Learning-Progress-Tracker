@@ -17,7 +17,7 @@ public class Course {
     private String name;
     private long maxPoints;
     private long points;
-    private boolean isNotify;
+    private boolean notified;
 
     public Course(String name) {
         this.name = name;
@@ -39,13 +39,5 @@ public class Course {
 
     public boolean isCompleted() {
         return Objects.equals(points, maxPoints);
-    }
-
-    public boolean isNotify() {
-        return isNotify;
-    }
-
-    public void setNotify(boolean notify) {
-        isNotify = notify;
     }
 }

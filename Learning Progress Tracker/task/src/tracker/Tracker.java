@@ -6,13 +6,12 @@ import tracker.model.Assignment;
 import tracker.model.Student;
 import tracker.util.TrackerUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Tracker implements Serializable {
+public class Tracker {
 
     private static final Tracker INSTANCE = new Tracker();
 
