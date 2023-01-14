@@ -21,8 +21,7 @@ public class TrackerValidator {
         return email.matches(EMAIL_REGEX);
     }
 
-    public static boolean valid(String input) {
-        List<String> data = Arrays.asList(input.split("\\s+"));
+    public static boolean valid(List<String> data) {
         return data.size() == 5 && allNumeric(data);
     }
 

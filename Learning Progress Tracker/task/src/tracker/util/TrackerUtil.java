@@ -33,7 +33,6 @@ public class TrackerUtil {
             SPRING
     );
 
-    public static final double PERCENT = 100.0;
     public static final List<String> STATISTICS_ROWS_NAMES = List.of(
             "Most popular",
             "Least popular",
@@ -42,6 +41,7 @@ public class TrackerUtil {
             "Easiest course",
             "Hardest course"
     );
+    public static final String BACK_COMMAND = "back";
 
 
     public static String stringifyCourseList(List<String> courses) {
@@ -97,7 +97,7 @@ public class TrackerUtil {
     public static String printCoursePoints(Student student) {
         StringBuilder sb = new StringBuilder(String.format("%s points: ", student.getId()));
         student.getCourses().forEach((s, course) -> {
-            String format = BASE_COURSES.get(3).equals(s) ? "%s=%d" : "%s=%d; ";
+            String format = SPRING.equals(s) ? "%s=%d" : "%s=%d; ";
             sb.append(String.format(format, s, course.getPoints()));
         });
         return sb.toString();

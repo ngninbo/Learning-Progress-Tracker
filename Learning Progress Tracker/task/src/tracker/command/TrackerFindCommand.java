@@ -4,6 +4,8 @@ import tracker.Tracker;
 import tracker.model.Student;
 import tracker.util.TrackerUtil;
 
+import static tracker.util.TrackerUtil.BACK_COMMAND;
+
 public class TrackerFindCommand implements Command {
 
     @Override
@@ -16,7 +18,7 @@ public class TrackerFindCommand implements Command {
         while (true) {
             String input = TrackerUtil.requestUserInput();
 
-            if ("back".equals(input)) {
+            if (BACK_COMMAND.equals(input)) {
                 return;
             }
 

@@ -9,9 +9,9 @@ import tracker.util.TrackerValidator;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static tracker.util.TrackerUtil.BACK_COMMAND;
 import static tracker.util.TrackerUtil.BASE_COURSES;
 
 public class TrackerAddPointCommand implements Command {
@@ -27,25 +27,24 @@ public class TrackerAddPointCommand implements Command {
         while (true) {
             String input = TrackerUtil.requestUserInput();
 
-            if ("back".equals(input)) {
+            if (BACK_COMMAND.equals(input)) {
                 return;
             }
 
-            String[] data = input.split("\\s+");
-            String studentId = data[0];
+            List<String> data = Arrays.asList(input.split("\\s+"));
+            String studentId = data.get(0);
 
             if (!studentId.matches("\\d+")) {
                 System.out.printf("No student is found for id=%s.\n", studentId);
-            } else if (!TrackerValidator.valid(input)) {
+            } else if (!TrackerValidator.valid(data)) {
                 System.out.println("Incorrect points format");
             } else {
-                List<Long> records = Arrays.stream(data).map(Long::parseLong).collect(Collectors.toList());
                 final Long id = Long.parseLong(studentId);
                 Student student = Tracker.students.get(id);
                 if (student == null) {
                     System.out.printf("No student is found for id=%s.\n", studentId);
                 } else {
-                    update(records.subList(1, records.size()), student);
+                    update(data.subList(1, data.size()), student);
                     System.out.println("Points updated.");
                     Tracker.students.replace(id, student);
                 }
@@ -53,11 +52,11 @@ public class TrackerAddPointCommand implements Command {
         }
     }
 
-    private void update(List<Long> records, Student student) {
+    private void update(List<String> records, Student student) {
         IntStream.range(0, records.size())
                 .forEach(i -> {
                     String name = BASE_COURSES.get(i);
-                    Long points = records.get(i);
+                    long points = Long.parseLong(records.get(i));
                     student.updateCourse(name, points);
                     if (points > 0) {
                         Assignment assignment = new Assignment(student.getId(), new Course(name, points));

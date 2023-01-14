@@ -9,6 +9,8 @@ import tracker.search.Finder;
 
 import java.util.*;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.reverseOrder;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static tracker.util.TrackerUtil.*;
@@ -39,7 +41,7 @@ public class TrackerStatisticsCommand implements Command {
         STATISTICS_ROWS_NAMES.forEach(s -> System.out.printf("%s: %s\n", s, findCourseByCategory(s)));
         while (true) {
             String input = new Scanner(System.in).nextLine();
-            if ("back".equals(input)) {
+            if (BACK_COMMAND.equals(input)) {
                 return;
             } else if (BASE_COURSES.stream().noneMatch(s -> s.equalsIgnoreCase(input))) {
                 System.out.println("Unknown course.");
@@ -134,18 +136,13 @@ public class TrackerStatisticsCommand implements Command {
     public void showCourseDetails(String courseName) {
         System.out.println(courseName);
         System.out.println("id\tpoints\tcompleted");
-        StringBuilder stringBuilder = new StringBuilder();
 
         Tracker.students.values()
                 .stream()
                 .filter(student -> student.isEnrolled(courseName))
-                .sorted(Comparator.comparing(student -> student.sumPoints(courseName), Comparator.reverseOrder()))
-                .forEachOrdered(student -> stringBuilder.append(student.getId()).append("\t")
-                        .append(student.sumPoints(courseName)).append("\t")
-                        .append(student.progress(courseName)).append("%\n"));
-
-        if (!stringBuilder.toString().isEmpty()) {
-            System.out.print(stringBuilder);
-        }
+                .sorted(comparing(student -> student.sumPoints(courseName), reverseOrder()))
+                .map(student -> student.details(courseName))
+                .filter(s -> !s.isEmpty())
+                .forEachOrdered(System.out::print);
     }
 }

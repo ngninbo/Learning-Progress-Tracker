@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static tracker.util.TrackerUtil.BACK_COMMAND;
+import static tracker.util.TrackerUtil.logInfoForIncorrectValue;
+
 public class TrackerAddStudentCommand implements Command {
 
     @Override
@@ -25,7 +28,7 @@ public class TrackerAddStudentCommand implements Command {
             List<String> credentials = Arrays.asList(input.split("\\s+"));
             final int size = credentials.size();
 
-            if (credentials.contains("back")) {
+            if (credentials.contains(BACK_COMMAND)) {
                 System.out.printf("Total %s students have been added.\n", Tracker.students.size());
                 return;
             } else if (size <= 2) {
@@ -34,7 +37,7 @@ public class TrackerAddStudentCommand implements Command {
                 String firstname = credentials.get(0);
                 String email = credentials.get(size - 1).trim();
 
-                if (exist(email)) {
+                if (exists(email)) {
                     System.out.println("This email is already taken.");
                 } else {
                     StringBuilder lastname = new StringBuilder();
@@ -58,11 +61,11 @@ public class TrackerAddStudentCommand implements Command {
     private void validate(Student student) {
         if (!student.isValid()) {
             if (!student.hasValidFirstname()) {
-                TrackerUtil.logInfoForIncorrectValue("first name");
+                logInfoForIncorrectValue("first name");
             } else if (!student.hasValidLastname()) {
-                TrackerUtil.logInfoForIncorrectValue("last name");
+                logInfoForIncorrectValue("last name");
             } else {
-                TrackerUtil.logInfoForIncorrectValue("email");
+                logInfoForIncorrectValue("email");
             }
         } else {
             Tracker.students.put(student.getId(), student);
@@ -70,7 +73,7 @@ public class TrackerAddStudentCommand implements Command {
         }
     }
 
-    private boolean exist(String email) {
+    private boolean exists(String email) {
         return Tracker.students.values()
                 .stream()
                 .anyMatch(student -> email.equals(student.getEmail()));

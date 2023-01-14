@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tracker.util.TrackerValidator;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +22,8 @@ public class SampleTest {
     @ParameterizedTest(name = "Should validate {0} as {1}")
     @MethodSource("pointsArgument")
     void validatePoints(String input, boolean valid) {
-        assertEquals(valid, TrackerValidator.valid(input));
+        List<String> data = Arrays.asList(input.split("\\s+"));
+        assertEquals(valid, TrackerValidator.valid(data));
     }
 
     static List<Arguments> pointsArgument() {

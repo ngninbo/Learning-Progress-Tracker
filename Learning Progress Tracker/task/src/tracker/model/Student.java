@@ -54,11 +54,16 @@ public class Student {
         return courses.get(courseName).getPoints();
     }
 
+    public String details(String courseName) {
+        return id + "\t" +
+                sumPoints(courseName) + "\t" +
+                progress(courseName) + "%\n";
+    }
+
     public double progress(String courseName) {
-        final Course course = courses.get(courseName);
         return BigDecimal.valueOf(sumPoints(courseName))
                 .multiply(BigDecimal.TEN.multiply(BigDecimal.TEN))
-                .divide(BigDecimal.valueOf(course.getMaxPoints()), 1, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(maxPoints(courseName)), 1, RoundingMode.HALF_UP)
                 .doubleValue();
     }
 
@@ -75,5 +80,9 @@ public class Student {
             return true;
         }
         return false;
+    }
+
+    private Long maxPoints(String courseName) {
+        return courses.get(courseName).getMaxPoints();
     }
 }
