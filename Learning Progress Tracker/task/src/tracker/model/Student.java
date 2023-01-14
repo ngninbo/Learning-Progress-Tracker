@@ -54,7 +54,7 @@ public class Student {
         return courses.get(courseName).getPoints();
     }
 
-    public String details(String courseName) {
+    public String completion(String courseName) {
         return id + "\t" +
                 sumPoints(courseName) + "\t" +
                 progress(courseName) + "%\n";

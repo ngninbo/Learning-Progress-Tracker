@@ -40,14 +40,13 @@ public class TrackerStatisticsCommand implements Command {
         System.out.println("Type the name of a course to see details or 'back' to quit");
         STATISTICS_ROWS_NAMES.forEach(s -> System.out.printf("%s: %s\n", s, findCourseByCategory(s)));
         while (true) {
-            String input = new Scanner(System.in).nextLine();
-            if (BACK_COMMAND.equals(input)) {
+            String courseName = new Scanner(System.in).nextLine();
+            if (BACK_COMMAND.equals(courseName)) {
                 return;
-            } else if (BASE_COURSES.stream().noneMatch(s -> s.equalsIgnoreCase(input))) {
+            } else if (BASE_COURSES.stream().noneMatch(s -> s.equalsIgnoreCase(courseName))) {
                 System.out.println("Unknown course.");
             } else {
-                String courseName = "dsa".equals(input) ? input.toUpperCase() : input.substring(0, 1).toUpperCase() + input.substring(1);
-                showCourseDetails(courseName);
+                showTopLearners(courseName);
             }
         }
     }
@@ -90,30 +89,52 @@ public class TrackerStatisticsCommand implements Command {
     }
 
 
+    /**
+     * Find out which courses are the most popular ones.
+     * The most popular has the biggest number of enrolled students.
+     * @return List containing names of most popular courses
+     */
     public List<String> findMostPopularCourses() {
         return finder
                 .setStrategy(searchContext.setMap(findEnrolledStudentPerCourse(studentMap)))
                 .findMax();
     }
 
+    /**
+     * Find out which courses are the least popular ones.
+     * @return List containing names of the least popular courses
+     */
     public List<String> findLeastPopularCourse() {
         return finder
                 .setStrategy(searchContext.setMap(findEnrolledStudentPerCourse(studentMap)))
                 .findMin();
     }
 
+    /**
+     * Establish the hardest course.
+     * The easiest course has the lowest average grade per assignment.
+     */
     public List<String> findHardestCourse() {
         return finder
                 .setStrategy(strengthSearchContext.setMap(findAverageGradPerAssignmentEachCourse(assignments)))
                 .findMin();
     }
 
+    /**
+     * Establish the easiest course.
+     * The easiest course has the highest average grade per assignment.
+     */
     public List<String> findEasiestCourse() {
         return finder
                 .setStrategy(strengthSearchContext.setMap(findAverageGradPerAssignmentEachCourse(assignments)))
                 .findMax();
     }
 
+    /**
+     * Find out which course has the highest student activity.
+     * Higher student activity means a bigger number of completed tasks;
+     * @return List containing names of course with the highest activity
+     */
     public List<String> findCourseWithHighestActivity() {
         if (courseSubmission.values().stream().allMatch((aLong -> aLong == 0))) {
             return Collections.emptyList();
@@ -124,6 +145,10 @@ public class TrackerStatisticsCommand implements Command {
     }
 
 
+    /**
+     * Find out which course has the lowest student activity.
+     * @return List containing names of course with the lowest activity
+     */
     public List<String> findCourseWithLowestActivity() {
         if (courseSubmission.values().stream().allMatch((aLong -> aLong == 0))) {
             return Collections.emptyList();
@@ -133,15 +158,19 @@ public class TrackerStatisticsCommand implements Command {
                 .findMin();
     }
 
-    public void showCourseDetails(String courseName) {
-        System.out.println(courseName);
-        System.out.println("id\tpoints\tcompleted");
+    /**
+     * Establish top learners for given course.
+     * @param courseName Courses name
+     */
+    public void showTopLearners(String courseName) {
+        String name = "dsa".equals(courseName) ? courseName.toUpperCase() : capitalize(courseName);
+        System.out.printf("%s\nid\tpoints\tcompleted\n", name);
 
         Tracker.students.values()
                 .stream()
-                .filter(student -> student.isEnrolled(courseName))
-                .sorted(comparing(student -> student.sumPoints(courseName), reverseOrder()))
-                .map(student -> student.details(courseName))
+                .filter(student -> student.isEnrolled(name))
+                .sorted(comparing(student -> student.sumPoints(name), reverseOrder()))
+                .map(student -> student.completion(name))
                 .filter(s -> !s.isEmpty())
                 .forEachOrdered(System.out::print);
     }
