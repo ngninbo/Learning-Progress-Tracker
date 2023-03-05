@@ -1,14 +1,16 @@
 package tracker.command;
 
-import tracker.domain.CommandFactory;
 import tracker.domain.StudentFactory;
 import tracker.domain.TrackerAction;
 import tracker.model.Student;
+import tracker.util.TrackerValidator;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+
+import static tracker.util.TrackerValidator.*;
 
 public class TrackerAddStudentCommand implements Command {
 
@@ -31,7 +33,7 @@ public class TrackerAddStudentCommand implements Command {
             List<String> credentials = Arrays.asList(input.split("\\s+"));
             final int size = credentials.size();
 
-            if (credentials.contains(TrackerAction.BACK.name().toLowerCase())) {
+            if (input.contains(TrackerAction.BACK.name().toLowerCase())) {
                 System.out.printf("Total %s students have been added.\n", students.size());
                 return;
             } else if (size <= 2) {
@@ -55,32 +57,31 @@ public class TrackerAddStudentCommand implements Command {
         }
     }
 
-    private void validate(Student student) {
-        if (!student.isValid()) {
-            printValidationError(student);
-        } else {
-            students.put(student.getId(), student);
-            System.out.println("The student has been added.");
-        }
-    }
-
     private boolean exists(String email) {
         return students.values()
                 .stream()
                 .anyMatch(student -> email.equals(student.getEmail()));
     }
 
-    private void printValidationError(Student student) {
+    private void validate(Student student) {
         String invalidField;
 
-        if (!student.hasValidFirstname()) {
+        if (notMatches(student.getFirstname(), NAME_REGEX)) {
             invalidField = "first name";
-        } else if (!student.hasValidLastname()) {
+        } else if (notMatches(student.getLastname(), LASTNAME_REGEX)) {
             invalidField = "last name";
-        } else {
+        } else if (notMatches(student.getEmail(), EMAIL_REGEX)){
             invalidField = "email";
+        } else {
+            students.put(student.getId(), student);
+            System.out.println("The student has been added.");
+            return;
         }
 
         System.out.printf("Incorrect %s.\n", invalidField);
+    }
+
+    private boolean notMatches(String field, String regex) {
+        return TrackerValidator.matches(regex).negate().test(field);
     }
 }

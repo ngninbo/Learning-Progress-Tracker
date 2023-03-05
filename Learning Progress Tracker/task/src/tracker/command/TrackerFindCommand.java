@@ -1,6 +1,5 @@
 package tracker.command;
 
-import tracker.domain.CommandFactory;
 import tracker.domain.CourseType;
 import tracker.model.Student;
 

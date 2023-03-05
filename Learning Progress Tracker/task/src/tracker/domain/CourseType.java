@@ -25,6 +25,10 @@ public enum CourseType {
                 .orElse(0L);
     }
 
+    public static String get(int i) {
+        return values()[i].capitalize();
+    }
+
     public long getMaxPoints() {
         return maxPoints;
     }

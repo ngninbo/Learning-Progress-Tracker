@@ -195,18 +195,13 @@ public class TrackerStatisticsCommand implements Statistic, Command {
     private Map<String, Long> findEnrolledStudentPerCourse(Map<Long, Student> studentMap) {
         Map<String, Long> enrolledStudentPerCourse = new ConcurrentHashMap<>();
 
-        if (studentMap.isEmpty()) {
-            return Map.of();
+        for (String course : CourseType.names()) {
+            for (Student student : studentMap.values()) {
+                if (student.isEnrolled(course)) {
+                    enrolledStudentPerCourse.put(course, enrolledStudentPerCourse.getOrDefault(course, 0L) + 1);
+                }
+            }
         }
-
-        CourseType.names().forEach(course -> {
-            long enrollment = studentMap.values()
-                    .stream()
-                    .filter(student -> student.isEnrolled(course))
-                    .count();
-
-            enrolledStudentPerCourse.put(course, enrollment);
-        });
 
         return enrolledStudentPerCourse;
     }
