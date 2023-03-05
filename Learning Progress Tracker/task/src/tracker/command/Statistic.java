@@ -7,16 +7,16 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-public interface Statistic {
+public abstract class Statistic {
 
-    List<String> findMostPopularCourses();
-    List<String> findLeastPopularCourse();
-    List<String> findCourseWithHighestActivity();
-    List<String> findCourseWithLowestActivity();
-    List<String> findEasiestCourse();
-    List<String> findHardestCourse();
+    protected abstract List<String> findMostPopularCourses();
+    protected abstract List<String> findLeastPopularCourse();
+    protected abstract List<String> findCourseWithHighestActivity();
+    protected abstract List<String> findCourseWithLowestActivity();
+    protected abstract List<String> findEasiestCourse();
+    protected abstract List<String> findHardestCourse();
 
-    default List<String> findByCategory(Category category) {
+    public List<String> findByCategory(Category category) {
         List<String> courses;
 
         switch (category) {
@@ -43,13 +43,18 @@ public interface Statistic {
         }
     }
 
-    default String completion(Student student, String course) {
+    public void statistics() {
+        Category.toList()
+                .forEach(category -> System.out.printf("%s: %s\n", category.capitalize(), findCourseByCategory(category)));
+    }
+
+    protected String completion(Student student, String course) {
         return student.getId() + "\t" +
                 sumPoints(student, course) + "\t" +
                 progress(student, course) + "%\n";
     }
 
-    default Long sumPoints(Student student, String course) {
+    protected Long sumPoints(Student student, String course) {
         return student.getCourses().get(course).getPoints();
     }
 
@@ -60,7 +65,7 @@ public interface Statistic {
                 .doubleValue();
     }
 
-    default String findCourseByCategory(Category category) {
+    protected String findCourseByCategory(Category category) {
         String stringBuilder = stringifyCourseList(findByCategory(category));
 
         return stringBuilder.isEmpty() ? "n/a" : stringBuilder;

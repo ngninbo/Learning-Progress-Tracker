@@ -38,7 +38,7 @@ public class TrackerFindCommand implements Command {
         }
     }
 
-    public void printCoursePoints(Student student) {
+    private void printCoursePoints(Student student) {
         StringBuilder sb = new StringBuilder(String.format("%s points: ", student.getId()));
         student.getCourses().forEach((s, course) -> {
             String format = CourseType.SPRING.name().equalsIgnoreCase(s) ? "%s=%d" : "%s=%d; ";

@@ -25,7 +25,7 @@ public class TrackerAddStudentCommand implements Command {
         add();
     }
 
-    public void add() {
+    private void add() {
         System.out.println("Enter student credentials or 'back' to return:");
 
         while (true) {
