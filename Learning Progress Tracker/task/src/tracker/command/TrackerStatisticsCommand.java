@@ -9,8 +9,6 @@ import tracker.search.CourseGroupSearch;
 import tracker.search.CourseStrengthSearch;
 import tracker.search.SearchContext;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -42,8 +40,7 @@ public class TrackerStatisticsCommand implements Statistic, Command {
 
     public void stat() {
         System.out.println("Type the name of a course to see details or 'back' to quit");
-        Arrays.stream(Category.values())
-                .forEach(category -> System.out.printf("%s: %s\n", category.capitalize(), findCourseByCategory(category)));
+        statistics();
 
         while (true) {
             String courseName = new Scanner(System.in).nextLine();
@@ -57,23 +54,9 @@ public class TrackerStatisticsCommand implements Statistic, Command {
         }
     }
 
-    public String findCourseByCategory(Category category) {
-        String stringBuilder = stringifyCourseList(findByCategory(category));
-
-        return stringBuilder.isEmpty() ? "n/a" : stringBuilder;
-    }
-
-    private String stringifyCourseList(List<String> courses) {
-        StringBuilder sb;
-        sb = new StringBuilder();
-        for (int i = 0; i < courses.size(); i++) {
-            sb.append(courses.get(i));
-            if (i < courses.size() - 1) {
-                sb.append(", ");
-            }
-        }
-
-        return sb.toString();
+    private void statistics() {
+        Category.toList()
+                .forEach(category -> System.out.printf("%s: %s\n", category.capitalize(), findCourseByCategory(category)));
     }
 
     /**
@@ -122,9 +105,6 @@ public class TrackerStatisticsCommand implements Statistic, Command {
      */
     @Override
     public List<String> findCourseWithHighestActivity() {
-        if (courseSubmission.values().stream().allMatch((aLong -> aLong == 0))) {
-            return Collections.emptyList();
-        }
         return searchContext.setStrategy(new CourseGroupSearch(courseSubmission)).findMax();
     }
 
@@ -135,9 +115,6 @@ public class TrackerStatisticsCommand implements Statistic, Command {
      */
     @Override
     public List<String> findCourseWithLowestActivity() {
-        if (courseSubmission.values().stream().allMatch((aLong -> aLong == 0))) {
-            return Collections.emptyList();
-        }
         return searchContext.setStrategy(new CourseGroupSearch(courseSubmission)).findMin();
     }
 
@@ -155,23 +132,6 @@ public class TrackerStatisticsCommand implements Statistic, Command {
                 .sorted(comparing(student -> sumPoints(student, course), reverseOrder()))
                 .map(student -> completion(student, course))
                 .forEachOrdered(System.out::print);
-    }
-
-    private Long sumPoints(Student student, String course) {
-        return student.getCourses().get(course).getPoints();
-    }
-
-    private String completion(Student student, String course) {
-        return student.getId() + "\t" +
-                sumPoints(student, course) + "\t" +
-                progress(student, course) + "%\n";
-    }
-
-    private double progress(Student student, String course) {
-        return BigDecimal.valueOf(sumPoints(student, course))
-                .multiply(BigDecimal.TEN.multiply(BigDecimal.TEN))
-                .divide(BigDecimal.valueOf(student.maxPoints(course)), 1, RoundingMode.HALF_UP)
-                .doubleValue();
     }
 
     private Map<String, Double> findAverageGradPerAssignmentEachCourse(List<Assignment> assignments) {

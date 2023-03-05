@@ -1,5 +1,9 @@
 package tracker.domain;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum Category {
 
     MOST_POPULAR,
@@ -8,6 +12,11 @@ public enum Category {
     LOWEST_ACTIVITY,
     EASIEST_COURSE,
     HARDEST_COURSE;
+
+    public static List<Category> toList() {
+        return Arrays.stream(values())
+                .collect(Collectors.toList());
+    }
 
     public String capitalize() {
         String name = replaceUnderscore();
