@@ -2,6 +2,6 @@ package tracker;
 
 public class Main {
     public static void main(String[] args) {
-        Tracker.getInstance().start();
+        new Tracker().run();
     }
 }

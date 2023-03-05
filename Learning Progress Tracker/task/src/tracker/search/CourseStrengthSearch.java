@@ -6,13 +6,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class CourseStrengthSearchContext implements SearchStrategy {
+public class CourseStrengthSearch implements SearchStrategy {
 
-    private Map<String, Double> map;
+    private final Map<String, Double> map;
 
-    public CourseStrengthSearchContext setMap(Map<String, Double> map) {
+    public CourseStrengthSearch(Map<String, Double> map) {
         this.map = map;
-        return this;
     }
 
     @Override

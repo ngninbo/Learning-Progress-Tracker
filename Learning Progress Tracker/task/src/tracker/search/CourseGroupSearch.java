@@ -12,13 +12,12 @@ import java.util.stream.Collectors;
  * Find out which courses are the most and least popular ones.
  * The most popular has the biggest number of enrolled students;
  */
-public class CourseGroupSearchContext implements SearchStrategy {
+public class CourseGroupSearch implements SearchStrategy {
 
-    private Map<String, Long> map;
+    private final Map<String, Long> map;
 
-    public CourseGroupSearchContext setMap(Map<String, Long> map) {
+    public CourseGroupSearch(Map<String, Long> map) {
         this.map = map;
-        return this;
     }
 
     @Override

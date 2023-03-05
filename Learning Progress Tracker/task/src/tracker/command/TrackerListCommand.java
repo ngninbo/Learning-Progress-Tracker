@@ -1,8 +1,16 @@
 package tracker.command;
 
-import tracker.Tracker;
+import tracker.model.Student;
+
+import java.util.Map;
 
 public class TrackerListCommand implements Command {
+
+    public Map<Long, Student> students;
+
+    public TrackerListCommand(Map<Long, Student> students) {
+        this.students = students;
+    }
 
     @Override
     public void execute() {
@@ -10,12 +18,12 @@ public class TrackerListCommand implements Command {
     }
 
     public void list() {
-        if (Tracker.students.isEmpty()) {
+        if (students.isEmpty()) {
             System.out.println("No students found");
             return;
         }
 
         System.out.println("Students:");
-        Tracker.students.keySet().forEach(System.out::println);
+        students.keySet().forEach(System.out::println);
     }
 }

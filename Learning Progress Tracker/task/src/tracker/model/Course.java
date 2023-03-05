@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import tracker.util.TrackerUtil;
+import tracker.domain.CourseType;
 
 import java.util.Objects;
 
@@ -21,7 +21,7 @@ public class Course {
 
     public Course(String name) {
         this.name = name;
-        this.maxPoints = TrackerUtil.maxPoints(name);
+        this.maxPoints = CourseType.maxPoints(name);
     }
 
     public Course(String name, long points) {

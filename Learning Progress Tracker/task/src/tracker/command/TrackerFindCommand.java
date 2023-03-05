@@ -1,12 +1,18 @@
 package tracker.command;
 
-import tracker.Tracker;
+import tracker.domain.CourseType;
 import tracker.model.Student;
 import tracker.util.TrackerUtil;
 
-import static tracker.util.TrackerUtil.BACK_COMMAND;
+import java.util.Map;
 
 public class TrackerFindCommand implements Command {
+
+    public Map<Long, Student> students;
+
+    public TrackerFindCommand(Map<Long, Student> students) {
+        this.students = students;
+    }
 
     @Override
     public void execute() {
@@ -18,18 +24,28 @@ public class TrackerFindCommand implements Command {
         while (true) {
             String input = TrackerUtil.requestUserInput();
 
-            if (BACK_COMMAND.equals(input)) {
+            if (back().test(input)) {
                 return;
             }
 
             if (input.matches("\\d+")) {
-                Student student = Tracker.students.get(Long.parseLong(input));
+                Student student = students.get(Long.parseLong(input));
                 if (student == null) {
                     System.out.printf("No student is found for id=%s\n", input);
                 } else {
-                    System.out.println(TrackerUtil.printCoursePoints(student));
+                    printCoursePoints(student);
                 }
             }
         }
+    }
+
+    public void printCoursePoints(Student student) {
+        StringBuilder sb = new StringBuilder(String.format("%s points: ", student.getId()));
+        student.getCourses().forEach((s, course) -> {
+            String format = CourseType.SPRING.name().equalsIgnoreCase(s) ? "%s=%d" : "%s=%d; ";
+            sb.append(String.format(format, s, course.getPoints()));
+        });
+
+        System.out.println(sb);
     }
 }

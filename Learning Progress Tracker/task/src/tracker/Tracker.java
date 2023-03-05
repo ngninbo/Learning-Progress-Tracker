@@ -2,6 +2,7 @@ package tracker;
 
 import tracker.command.Command;
 import tracker.domain.CommandFactory;
+import tracker.domain.TrackerAction;
 import tracker.model.Assignment;
 import tracker.model.Student;
 import tracker.util.TrackerUtil;
@@ -11,32 +12,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Tracker {
+public class Tracker implements Runnable {
 
-    private static final Tracker INSTANCE = new Tracker();
+    private final Map<Long, Student> students = new HashMap<>();
+    private final List<Assignment> assignments = new ArrayList<>();
 
-    public static Map<Long, Student> students = new HashMap<>();
-    public static List<Assignment> assignments = new ArrayList<>();
+    private TrackerAction action;
 
-    public static Tracker getInstance() {
-        return INSTANCE;
+    @Override
+    public void run() {
+        start();
     }
 
-    public void start() {
+    private void start() {
         System.out.println("Learning Progress Tracker");
-        String input = null;
 
-        while(!"exit".equals(input)) {
-            input = TrackerUtil.requestUserInput().trim();
+        while(!exit()) {
+            String input = TrackerUtil.requestUserInput().trim().replace(" ", "_").toUpperCase();
 
             if (input.isEmpty()) {
                 System.out.println("No input.");
             } else {
-                Command command = CommandFactory.getCommand(input);
+                action = TrackerAction.of(input);
+                Command command = CommandFactory.getCommand(action, students, assignments);
                 if (command != null) {
                     command.execute();
                 }
             }
         }
+    }
+
+    private boolean exit() {
+        return TrackerAction.EXIT.equals(action);
     }
 }

@@ -2,11 +2,11 @@ package tracker.search;
 
 import java.util.List;
 
-public class Finder {
+public class SearchContext {
 
     private SearchStrategy strategy;
 
-    public Finder setStrategy(SearchStrategy strategy) {
+    public SearchContext setStrategy(SearchStrategy strategy) {
         this.strategy = strategy;
         return this;
     }

@@ -1329,44 +1329,6 @@ files:
         }
     }
   learner_created: true
-- name: src/tracker/search/CourseGroupSearchContext.java
-  visible: true
-  text: |
-    package tracker.search;
-
-    import java.util.Collections;
-    import java.util.List;
-    import java.util.Map;
-    import java.util.Objects;
-    import java.util.stream.Collectors;
-
-    public class CourseGroupSearchContext implements SearchStrategy {
-
-        private Map<String, Long> map;
-
-        public CourseGroupSearchContext setMap(Map<String, Long> map) {
-            this.map = map;
-            return this;
-        }
-
-        @Override
-        public List<String> findMax() {
-            return map.entrySet()
-                    .stream()
-                    .filter(entry -> Objects.equals(entry.getValue(), Collections.max(map.values())))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-        }
-
-        @Override
-        public List<String> findMin() {
-            return map.entrySet()
-                    .stream().filter(entry -> Objects.equals(entry.getValue(), Collections.min(map.values())))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-        }
-    }
-  learner_created: true
 - name: src/tracker/search/SearchStrategy.java
   visible: true
   text: |
@@ -1538,45 +1500,6 @@ files:
         }
     }
   learner_created: true
-- name: src/tracker/search/CourseStrengthSearchContext.java
-  visible: true
-  text: |
-    package tracker.search;
-
-    import java.util.Collections;
-    import java.util.List;
-    import java.util.Map;
-    import java.util.Objects;
-    import java.util.stream.Collectors;
-
-    public class CourseStrengthSearchContext implements SearchStrategy {
-
-        private Map<String, Double> map;
-
-        public CourseStrengthSearchContext setMap(Map<String, Double> map) {
-            this.map = map;
-            return this;
-        }
-
-        @Override
-        public List<String> findMax() {
-            return map.entrySet()
-                    .stream()
-                    .filter(entry -> Objects.equals(entry.getValue(), Collections.max(map.values())))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-        }
-
-        @Override
-        public List<String> findMin() {
-            return map.entrySet()
-                    .stream()
-                    .filter(entry -> Objects.equals(entry.getValue(), Collections.min(map.values())))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-        }
-    }
-  learner_created: true
 - name: src/tracker/command/TrackerExitCommand.java
   visible: true
   text: |
@@ -1712,31 +1635,6 @@ files:
 
             System.out.println("Students:");
             Tracker.students.keySet().forEach(System.out::println);
-        }
-    }
-  learner_created: true
-- name: src/tracker/search/Finder.java
-  visible: true
-  text: |
-    package tracker.search;
-
-    import java.util.List;
-
-    public class Finder {
-
-        private SearchStrategy strategy;
-
-        public Finder setStrategy(SearchStrategy strategy) {
-            this.strategy = strategy;
-            return this;
-        }
-
-        public List<String> findMax() {
-            return strategy.findMax();
-        }
-
-        public List<String> findMin() {
-            return strategy.findMin();
         }
     }
   learner_created: true
@@ -1965,6 +1863,126 @@ files:
     }
   learner_created: true
 - name: src/tracker/command/TrackerNotifyCommand.java
+  visible: true
+  learner_created: true
+- name: src/tracker/search/SearchContext.java
+  visible: true
+  text: |
+    package tracker.search;
+
+    import java.util.List;
+
+    public class Finder {
+
+        private SearchStrategy strategy;
+
+        public Finder setStrategy(SearchStrategy strategy) {
+            this.strategy = strategy;
+            return this;
+        }
+
+        public List<String> findMax() {
+            return strategy.findMax();
+        }
+
+        public List<String> findMin() {
+            return strategy.findMin();
+        }
+    }
+  learner_created: true
+- name: src/tracker/search/CourseStrengthSearch.java
+  visible: true
+  text: |
+    package tracker.search;
+
+    import java.util.Collections;
+    import java.util.List;
+    import java.util.Map;
+    import java.util.Objects;
+    import java.util.stream.Collectors;
+
+    public class CourseStrengthSearchContext implements SearchStrategy {
+
+        private Map<String, Double> map;
+
+        public CourseStrengthSearchContext setMap(Map<String, Double> map) {
+            this.map = map;
+            return this;
+        }
+
+        @Override
+        public List<String> findMax() {
+            return map.entrySet()
+                    .stream()
+                    .filter(entry -> Objects.equals(entry.getValue(), Collections.max(map.values())))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<String> findMin() {
+            return map.entrySet()
+                    .stream()
+                    .filter(entry -> Objects.equals(entry.getValue(), Collections.min(map.values())))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+        }
+    }
+  learner_created: true
+- name: src/tracker/search/CourseGroupSearch.java
+  visible: true
+  text: |
+    package tracker.search;
+
+    import java.util.Collections;
+    import java.util.List;
+    import java.util.Map;
+    import java.util.Objects;
+    import java.util.stream.Collectors;
+
+    public class CourseGroupSearchContext implements SearchStrategy {
+
+        private Map<String, Long> map;
+
+        public CourseGroupSearchContext setMap(Map<String, Long> map) {
+            this.map = map;
+            return this;
+        }
+
+        @Override
+        public List<String> findMax() {
+            return map.entrySet()
+                    .stream()
+                    .filter(entry -> Objects.equals(entry.getValue(), Collections.max(map.values())))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<String> findMin() {
+            return map.entrySet()
+                    .stream().filter(entry -> Objects.equals(entry.getValue(), Collections.min(map.values())))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+        }
+    }
+  learner_created: true
+- name: src/tracker/domain/TrackerAction.java
+  visible: true
+  learner_created: true
+- name: src/tracker/domain/CourseType.java
+  visible: true
+  learner_created: true
+- name: src/tracker/domain/Category.java
+  visible: true
+  learner_created: true
+- name: src/tracker/command/Statistic.java
+  visible: true
+  learner_created: true
+- name: src/tracker/domain/StudentFactory.java
+  visible: true
+  learner_created: true
+- name: src/tracker/domain/NotificationService.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/14400#comment

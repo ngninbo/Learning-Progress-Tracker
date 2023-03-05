@@ -1,19 +1,22 @@
 package tracker.command;
 
-import tracker.Tracker;
-import tracker.domain.NumberGenerator;
+import tracker.domain.StudentFactory;
+import tracker.domain.TrackerAction;
 import tracker.model.Student;
 import tracker.util.TrackerUtil;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
-import static tracker.util.TrackerUtil.BACK_COMMAND;
-import static tracker.util.TrackerUtil.logInfoForIncorrectValue;
-
 public class TrackerAddStudentCommand implements Command {
+
+    public Map<Long, Student> students;
+
+    public TrackerAddStudentCommand(Map<Long, Student> students) {
+        this.students = students;
+    }
 
     @Override
     public void execute() {
@@ -22,14 +25,14 @@ public class TrackerAddStudentCommand implements Command {
 
     public void add() {
         System.out.println("Enter student credentials or 'back' to return:");
-        String input;
+
         while (true) {
-            input = TrackerUtil.requestUserInput();
+            String input = TrackerUtil.requestUserInput();
             List<String> credentials = Arrays.asList(input.split("\\s+"));
             final int size = credentials.size();
 
-            if (credentials.contains(BACK_COMMAND)) {
-                System.out.printf("Total %s students have been added.\n", Tracker.students.size());
+            if (credentials.contains(TrackerAction.BACK.name().toLowerCase())) {
+                System.out.printf("Total %s students have been added.\n", students.size());
                 return;
             } else if (size <= 2) {
                 System.out.println("Incorrect credentials.");
@@ -42,15 +45,9 @@ public class TrackerAddStudentCommand implements Command {
                 } else {
                     StringBuilder lastname = new StringBuilder();
                     IntStream.range(1, size - 1)
-                            .forEach(i -> lastname.append(credentials.get(i)).append(" "));
+                            .forEach(i -> lastname.append(credentials.get(i).concat(" ")));
 
-                    Student student = Student.builder()
-                            .id(NumberGenerator.getInstance().next())
-                            .firstname(firstname)
-                            .lastname(lastname.toString().trim())
-                            .email(email)
-                            .courses(new HashMap<>())
-                            .build();
+                    Student student = StudentFactory.of(firstname, lastname.toString().trim(), email);
 
                     validate(student);
                 }
@@ -60,22 +57,30 @@ public class TrackerAddStudentCommand implements Command {
 
     private void validate(Student student) {
         if (!student.isValid()) {
-            if (!student.hasValidFirstname()) {
-                logInfoForIncorrectValue("first name");
-            } else if (!student.hasValidLastname()) {
-                logInfoForIncorrectValue("last name");
-            } else {
-                logInfoForIncorrectValue("email");
-            }
+            printValidationError(student);
         } else {
-            Tracker.students.put(student.getId(), student);
+            students.put(student.getId(), student);
             System.out.println("The student has been added.");
         }
     }
 
     private boolean exists(String email) {
-        return Tracker.students.values()
+        return students.values()
                 .stream()
                 .anyMatch(student -> email.equals(student.getEmail()));
+    }
+
+    private void printValidationError(Student student) {
+        String invalidField;
+
+        if (!student.hasValidFirstname()) {
+            invalidField = "first name";
+        } else if (!student.hasValidLastname()) {
+            invalidField = "last name";
+        } else {
+            invalidField = "email";
+        }
+
+        System.out.printf("Incorrect %s.\n", invalidField);
     }
 }
