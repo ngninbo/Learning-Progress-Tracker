@@ -5,7 +5,6 @@ import tracker.domain.CommandFactory;
 import tracker.domain.TrackerAction;
 import tracker.model.Assignment;
 import tracker.model.Student;
-import tracker.util.TrackerUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class Tracker implements Runnable {
         System.out.println("Learning Progress Tracker");
 
         while(!exit()) {
-            String input = TrackerUtil.requestUserInput().trim().replace(" ", "_").toUpperCase();
+            String input = Command.requestUserInput().trim().replace(" ", "_").toUpperCase();
 
             if (input.isEmpty()) {
                 System.out.println("No input.");

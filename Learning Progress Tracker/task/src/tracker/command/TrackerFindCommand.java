@@ -1,8 +1,8 @@
 package tracker.command;
 
+import tracker.domain.CommandFactory;
 import tracker.domain.CourseType;
 import tracker.model.Student;
-import tracker.util.TrackerUtil;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class TrackerFindCommand implements Command {
     private void find() {
         System.out.println("Enter an id or 'back' to return");
         while (true) {
-            String input = TrackerUtil.requestUserInput();
+            String input = Command.requestUserInput();
 
             if (back().test(input)) {
                 return;

@@ -1,9 +1,9 @@
 package tracker.command;
 
+import tracker.domain.CommandFactory;
 import tracker.domain.StudentFactory;
 import tracker.domain.TrackerAction;
 import tracker.model.Student;
-import tracker.util.TrackerUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +27,7 @@ public class TrackerAddStudentCommand implements Command {
         System.out.println("Enter student credentials or 'back' to return:");
 
         while (true) {
-            String input = TrackerUtil.requestUserInput();
+            String input = Command.requestUserInput();
             List<String> credentials = Arrays.asList(input.split("\\s+"));
             final int size = credentials.size();
 

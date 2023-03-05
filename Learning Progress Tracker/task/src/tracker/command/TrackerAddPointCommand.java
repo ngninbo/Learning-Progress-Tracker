@@ -4,7 +4,6 @@ import tracker.domain.CourseType;
 import tracker.model.Assignment;
 import tracker.model.Course;
 import tracker.model.Student;
-import tracker.util.TrackerUtil;
 import tracker.util.TrackerValidator;
 
 import java.util.Arrays;
@@ -31,7 +30,7 @@ public class TrackerAddPointCommand implements Command {
         System.out.println("Enter an id and points or 'back' to return:");
 
         while (true) {
-            String input = TrackerUtil.requestUserInput();
+            String input = Command.requestUserInput();
 
             if (back().test(input)) {
                 return;
