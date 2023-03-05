@@ -1,6 +1,6 @@
-package tracker.domain;
+package tracker.command;
 
-import tracker.command.*;
+import tracker.domain.TrackerAction;
 import tracker.model.Assignment;
 import tracker.model.Student;
 

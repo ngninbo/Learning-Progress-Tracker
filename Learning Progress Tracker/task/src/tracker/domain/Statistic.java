@@ -1,6 +1,5 @@
-package tracker.command;
+package tracker.domain;
 
-import tracker.domain.Category;
 import tracker.model.Student;
 
 import java.math.BigDecimal;

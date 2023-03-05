@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class TrackerNotifyCommand implements Command {
 
-    public Map<Long, Student> students;
+    private final Map<Long, Student> students;
 
     public TrackerNotifyCommand(Map<Long, Student> students) {
         this.students = students;

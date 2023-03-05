@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class TrackerListCommand implements Command {
 
-    public Map<Long, Student> students;
+    private final Map<Long, Student> students;
 
     public TrackerListCommand(Map<Long, Student> students) {
         this.students = students;

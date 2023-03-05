@@ -1,7 +1,7 @@
 package tracker;
 
 import tracker.command.Command;
-import tracker.domain.CommandFactory;
+import tracker.command.CommandFactory;
 import tracker.domain.TrackerAction;
 import tracker.model.Assignment;
 import tracker.model.Student;

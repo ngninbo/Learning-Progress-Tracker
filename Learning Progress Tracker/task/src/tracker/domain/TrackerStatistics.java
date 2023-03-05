@@ -1,6 +1,5 @@
 package tracker.domain;
 
-import tracker.command.Statistic;
 import tracker.model.Assignment;
 import tracker.model.Course;
 import tracker.model.Student;

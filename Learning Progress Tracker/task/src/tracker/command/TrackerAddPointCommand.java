@@ -10,13 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import static tracker.util.TrackerValidator.POINTS_INPUT_REGEX;
-import static tracker.util.TrackerValidator.matches;
+import static tracker.domain.TrackerValidator.*;
 
 public class TrackerAddPointCommand implements Command {
 
-    public Map<Long, Student> students;
-    public List<Assignment> assignments;
+    private final Map<Long, Student> students;
+    private final List<Assignment> assignments;
 
     public TrackerAddPointCommand(Map<Long, Student> students, List<Assignment> assignments) {
         this.students = students;
@@ -41,9 +40,9 @@ public class TrackerAddPointCommand implements Command {
             List<String> data = Arrays.asList(input.split("\\s+"));
             String studentId = data.get(0);
 
-            if (validate(studentId, "\\d+")) {
+            if (notMatches(studentId, "\\d+")) {
                 System.out.printf("No student is found for id=%s.\n", studentId);
-            } else if (validate(input, POINTS_INPUT_REGEX)) {
+            } else if (notMatches(input, POINTS_INPUT_REGEX)) {
                 System.out.println("Incorrect points format");
             } else {
                 final Long id = Long.parseLong(studentId);
@@ -51,18 +50,14 @@ public class TrackerAddPointCommand implements Command {
                 if (student == null) {
                     System.out.printf("No student is found for id=%s.\n", studentId);
                 } else {
-                    update(data.subList(1, data.size()), student);
+                    update(student, data.subList(1, data.size()));
                     System.out.println("Points updated.");
                 }
             }
         }
     }
 
-    private boolean validate(String studentId, String s) {
-        return matches(s).negate().test(studentId);
-    }
-
-    private void update(List<String> records, Student student) {
+    private void update(Student student, List<String> records) {
         IntStream.range(0, records.size())
                 .forEach(i -> {
                     String name = CourseType.get(i);
@@ -75,13 +70,12 @@ public class TrackerAddPointCommand implements Command {
                 });
     }
 
-    private void update(Student student, String name, long points) {
+    private void update(Student student, String courseName, long points) {
         final Map<String, Course> courses = student.getCourses();
-        if (courses.containsKey(name)) {
-            Course course = courses.get(name);
-            course.updatePoints(points);
+        if (courses.containsKey(courseName)) {
+            courses.get(courseName).updatePoints(points);
         } else {
-            courses.put(name, new Course(name, points));
+            courses.put(courseName, new Course(courseName, points));
         }
     }
 }
