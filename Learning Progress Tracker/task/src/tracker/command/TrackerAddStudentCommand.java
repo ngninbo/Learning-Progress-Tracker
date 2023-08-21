@@ -1,11 +1,12 @@
 package tracker.command;
 
-import tracker.domain.StudentFactory;
+import tracker.domain.NumberGenerator;
 import tracker.domain.TrackerAction;
 import tracker.model.Student;
 import tracker.domain.TrackerValidator;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -54,7 +55,13 @@ public class TrackerAddStudentCommand implements Command {
             IntStream.range(1, size - 1)
                     .forEach(i -> lastname.append(credentials.get(i).concat(" ")));
 
-            Student student = StudentFactory.of(firstname, lastname.toString().trim(), email);
+            Student student = Student.builder()
+                    .id(NumberGenerator.getInstance().next())
+                    .firstname(firstname)
+                    .lastname(lastname.toString().trim())
+                    .email(email)
+                    .courses(new HashMap<>())
+                    .build();
 
             if (TrackerValidator.valid(student)) {
                 students.put(student.getId(), student);

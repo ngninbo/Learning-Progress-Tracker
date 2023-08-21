@@ -6,10 +6,7 @@ import tracker.domain.TrackerAction;
 import tracker.model.Assignment;
 import tracker.model.Student;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Tracker implements Runnable {
 
@@ -33,10 +30,8 @@ public class Tracker implements Runnable {
                 System.out.println("No input.");
             } else {
                 action = TrackerAction.of(input);
-                Command command = CommandFactory.getCommand(action, students, assignments);
-                if (command != null) {
-                    command.execute();
-                }
+                Optional.ofNullable(CommandFactory.getCommand(action, students, assignments))
+                        .ifPresent(Command::execute);
             }
         }
     }

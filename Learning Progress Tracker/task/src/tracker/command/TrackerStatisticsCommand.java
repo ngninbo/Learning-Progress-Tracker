@@ -23,7 +23,7 @@ public class TrackerStatisticsCommand extends TrackerStatistics implements Comma
         statistics();
 
         while (true) {
-            String courseName = new Scanner(System.in).nextLine();
+            String courseName = Command.requestUserInput();
             if (back().test(courseName)) {
                 return;
             } else if (CourseType.noneMatch(courseName)) {

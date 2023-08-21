@@ -8,6 +8,7 @@ import tracker.model.Student;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static tracker.domain.TrackerValidator.*;
@@ -46,13 +47,11 @@ public class TrackerAddPointCommand implements Command {
                 System.out.println("Incorrect points format");
             } else {
                 final Long id = Long.parseLong(studentId);
-                Student student = students.get(id);
-                if (student == null) {
-                    System.out.printf("No student is found for id=%s.\n", studentId);
-                } else {
-                    update(student, data.subList(1, data.size()));
-                    System.out.println("Points updated.");
-                }
+                Optional.ofNullable(students.get(id))
+                        .ifPresentOrElse(student -> {
+                            update(student, data.subList(1, data.size()));
+                            System.out.println("Points updated.");
+                        }, () -> System.out.printf("No student is found for id=%s.\n", studentId));
             }
         }
     }

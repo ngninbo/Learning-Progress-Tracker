@@ -4,6 +4,7 @@ import tracker.domain.CourseType;
 import tracker.model.Student;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class TrackerFindCommand implements Command {
 
@@ -28,12 +29,9 @@ public class TrackerFindCommand implements Command {
             }
 
             if (input.matches("\\d+")) {
-                Student student = students.get(Long.parseLong(input));
-                if (student == null) {
-                    System.out.printf("No student is found for id=%s\n", input);
-                } else {
-                    printCoursePoints(student);
-                }
+                Optional.ofNullable(students.get(Long.parseLong(input)))
+                        .ifPresentOrElse(this::printCoursePoints,
+                                () -> System.out.printf("No student is found for id=%s\n", input));
             }
         }
     }

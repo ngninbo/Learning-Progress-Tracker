@@ -3,9 +3,9 @@ package tracker.domain;
 import tracker.model.Course;
 import tracker.model.Student;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 public class NotificationService {
 
@@ -17,7 +17,7 @@ public class NotificationService {
 
     public void sendNotification(Collection<Student> students) {
 
-        List<Student> notifiedStudent = new ArrayList<>();
+        Set<Student> notifiedStudent = new HashSet<>();
 
         for (Student student : students) {
             for (Course course : student.getCourses().values()) {
@@ -28,9 +28,7 @@ public class NotificationService {
             }
         }
 
-        long numberNotifiedStudent = notifiedStudent.stream().distinct().count();
-
-        System.out.printf(NOTIFICATION_SUCCEED_MSG, numberNotifiedStudent);
+        System.out.printf(NOTIFICATION_SUCCEED_MSG, notifiedStudent.size());
     }
 
     private void sendNotification(Student student, Course course) {
