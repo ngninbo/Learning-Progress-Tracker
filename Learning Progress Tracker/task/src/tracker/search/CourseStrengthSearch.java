@@ -14,11 +14,15 @@ public class CourseStrengthSearch implements SearchStrategy {
 
     @Override
     public List<String> findMax() {
-        return filter(map, Collections.max(map.values()));
+        return filterBy(Collections.max(map.values()));
     }
 
     @Override
     public List<String> findMin() {
-        return filter(map, Collections.min(map.values()));
+        return filterBy(Collections.min(map.values()));
+    }
+
+    private List<String> filterBy(Double value) {
+        return filter(map, value);
     }
 }
