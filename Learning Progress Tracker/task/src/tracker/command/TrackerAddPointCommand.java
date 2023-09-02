@@ -1,14 +1,12 @@
 package tracker.command;
 
-import tracker.domain.CourseType;
+import tracker.model.CourseStatus;
+import tracker.model.CourseType;
 import tracker.model.Assignment;
 import tracker.model.Course;
 import tracker.model.Student;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static tracker.domain.TrackerValidator.*;
@@ -62,6 +60,7 @@ public class TrackerAddPointCommand implements Command {
                     String name = CourseType.get(i);
                     long points = Long.parseLong(records.get(i));
                     update(student, name, points);
+                    updateStatus(student.getCourses().get(name));
                     if (points > 0) {
                         Assignment assignment = new Assignment(student.getId(), new Course(name, points));
                         assignments.add(assignment);
@@ -75,6 +74,15 @@ public class TrackerAddPointCommand implements Command {
             courses.get(courseName).updatePoints(points);
         } else {
             courses.put(courseName, new Course(courseName, points));
+        }
+    }
+
+    private void updateStatus(Course course) {
+
+        if (course.isCompleted()) {
+            course.updateStatus(CourseStatus.COMPLETED);
+        } else {
+            course.updateStatus(CourseStatus.ENROLLED);
         }
     }
 }

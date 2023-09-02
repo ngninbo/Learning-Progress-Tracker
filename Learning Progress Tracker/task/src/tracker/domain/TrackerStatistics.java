@@ -1,8 +1,6 @@
 package tracker.domain;
 
-import tracker.model.Assignment;
-import tracker.model.Course;
-import tracker.model.Student;
+import tracker.model.*;
 import tracker.search.CourseGroupSearch;
 import tracker.search.CourseStrengthSearch;
 import tracker.search.SearchContext;
@@ -10,6 +8,7 @@ import tracker.search.SearchContext;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
@@ -32,7 +31,7 @@ public class TrackerStatistics extends Statistic {
 
     /**
      * Establish top learners for given course.
-     * @param type {@link CourseType}
+     * @param type {@link tracker.model.CourseType}
      */
     public void showTopLearners(CourseType type) {
         String course = type.capitalize();
@@ -40,7 +39,7 @@ public class TrackerStatistics extends Statistic {
 
         studentMap.values()
                 .stream()
-                .filter(student -> student.isEnrolled(course))
+                .filter(student -> isEnrolled().test(student, course))
                 .sorted(comparing(student -> sumPoints(student, course), reverseOrder()))
                 .map(student -> completion(student, course))
                 .forEachOrdered(System.out::print);
@@ -134,12 +133,16 @@ public class TrackerStatistics extends Statistic {
 
         for (String course : CourseType.names()) {
             for (Student student : studentMap.values()) {
-                if (student.isEnrolled(course)) {
+                if (isEnrolled().test(student, course)) {
                     enrolledStudentPerCourse.put(course, enrolledStudentPerCourse.getOrDefault(course, 0L) + 1);
                 }
             }
         }
 
         return enrolledStudentPerCourse;
+    }
+
+    private BiPredicate<Student, String> isEnrolled() {
+        return (student, course) -> student.getCourses().get(course).getStatuses().contains(CourseStatus.ENROLLED);
     }
 }

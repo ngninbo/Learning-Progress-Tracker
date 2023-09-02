@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class CourseStrengthSearch implements SearchStrategy {
+public class CourseStrengthSearch implements MapFilter<Double>, SearchStrategy {
 
     private final Map<String, Double> map;
 
@@ -22,7 +22,8 @@ public class CourseStrengthSearch implements SearchStrategy {
         return filterBy(Collections.min(map.values()));
     }
 
-    private List<String> filterBy(Double value) {
+    @Override
+    public List<String> filterBy(Double value) {
         return filter(map, value);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
  * Find out which courses are the most and least popular ones.
  * The most popular has the biggest number of enrolled students;
  */
-public class CourseGroupSearch implements SearchStrategy {
+public class CourseGroupSearch implements MapFilter<Long>, SearchStrategy {
 
     private final Map<String, Long> map;
 
@@ -28,7 +28,8 @@ public class CourseGroupSearch implements SearchStrategy {
         return filterBy(Collections.min(map.values()));
     }
 
-    private List<String> filterBy(Long value) {
+    @Override
+    public List<String> filterBy(Long value) {
         return filter(map, value);
     }
 }

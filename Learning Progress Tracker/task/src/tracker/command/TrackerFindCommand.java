@@ -1,6 +1,6 @@
 package tracker.command;
 
-import tracker.domain.CourseType;
+import tracker.model.CourseType;
 import tracker.model.Student;
 
 import java.util.Map;

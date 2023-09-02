@@ -1,11 +1,13 @@
 package tracker.domain;
 
 import tracker.model.Course;
+import tracker.model.CourseStatus;
 import tracker.model.Student;
 
 import java.util.HashSet;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class NotificationService {
 
@@ -21,7 +23,7 @@ public class NotificationService {
 
         for (Student student : students) {
             for (Course course : student.getCourses().values()) {
-                if (course.isCompleted() && !course.isNotified()) {
+                if (isNotificationPending().test(course)) {
                     sendNotification(student, course);
                     notifiedStudent.add(student);
                 }
@@ -33,6 +35,18 @@ public class NotificationService {
 
     private void sendNotification(Student student, Course course) {
         System.out.printf(NOTIFICATION_MSG_FORMAT, student.getEmail(), student.getFullName(), course.getName());
-        course.setNotified(true);
+        course.updateStatus(CourseStatus.NOTIFIED);
+    }
+
+    private Predicate<Course> isCompleted() {
+        return course -> course.getStatuses().contains(CourseStatus.COMPLETED);
+    }
+
+    private Predicate<Course> isNotified() {
+        return course -> course.getStatuses().contains(CourseStatus.NOTIFIED);
+    }
+
+    private Predicate<Course> isNotificationPending() {
+        return course -> isCompleted().and(isNotified().negate()).test(course);
     }
 }

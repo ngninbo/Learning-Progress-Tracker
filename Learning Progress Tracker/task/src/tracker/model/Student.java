@@ -17,10 +17,6 @@ public class Student {
     private String email;
     private Map<String, Course> courses;
 
-    public boolean isEnrolled(String course) {
-        return !courses.isEmpty() && courses.get(course).isEnrolled();
-    }
-
     public String getFullName() {
         return String.format("%s %s", firstname, lastname);
     }
