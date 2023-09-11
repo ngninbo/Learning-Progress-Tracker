@@ -4,9 +4,7 @@ import tracker.model.Course;
 import tracker.model.CourseStatus;
 import tracker.model.Student;
 
-import java.util.HashSet;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class NotificationService {
@@ -19,7 +17,7 @@ public class NotificationService {
 
     public void sendNotification(Collection<Student> students) {
 
-        Set<Student> notifiedStudent = new HashSet<>();
+        List<Student> notifiedStudent = new ArrayList<>();
 
         for (Student student : students) {
             for (Course course : student.getCourses().values()) {
@@ -30,7 +28,9 @@ public class NotificationService {
             }
         }
 
-        System.out.printf(NOTIFICATION_SUCCEED_MSG, notifiedStudent.size());
+        long numberNotifiedStudent = notifiedStudent.stream().distinct().count();
+
+        System.out.printf(NOTIFICATION_SUCCEED_MSG, numberNotifiedStudent);
     }
 
     private void sendNotification(Student student, Course course) {
